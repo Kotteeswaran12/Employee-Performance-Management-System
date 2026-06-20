@@ -1,0 +1,21 @@
+package com.employee_Manager.performance_system.Service;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+
+import com.employee_Manager.performance_system.Entity.Employees;
+
+public interface EmployeeService {
+
+	List<Employees>  getAllEmployees();
+
+	Employees addEmployees(Employees emp , Integer deptId);
+
+	Employees deleteEmployeeById(Integer id);
+
+	Employees getEmployeeById(Integer id);
+	
+	Employees addEmployeeAndAssigntoManager (Employees emp , Integer managerID);
+
+}
