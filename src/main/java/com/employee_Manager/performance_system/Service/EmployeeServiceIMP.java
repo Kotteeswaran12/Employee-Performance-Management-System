@@ -13,6 +13,7 @@ import com.employee_Manager.performance_system.Enums.RoleTypes;
 import com.employee_Manager.performance_system.Exceptions.DepartmentNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.NotaManagerException;
+import com.employee_Manager.performance_system.Exceptions.UserNotFoundException;
 import com.employee_Manager.performance_system.Repository.DepartmentRepository;
 import com.employee_Manager.performance_system.Repository.EmployeeRepository;
 
@@ -32,9 +33,12 @@ public class EmployeeServiceIMP implements EmployeeService {
 	}
 
 	@Override
-	public List<Employees> getAllEmployees() {
+	public List<Employees> getAllEmployees(String username) {
 		// TODO Auto-generated method stub
-		return empRepo.findAll();
+		Employees empManager =  empRepo.findByFirstname(username)
+				.orElseThrow(() -> new UserNotFoundException("The Manager Not Found with name :" + username));
+		
+		return empManager.getSubordinate();
 	}
 
 	@Override
@@ -73,11 +77,11 @@ public class EmployeeServiceIMP implements EmployeeService {
 
 
 	@Override
-	public Employees addEmployeeAndAssigntoManager(Employees emp, Integer managerID) {
+	public Employees addEmployeeAndAssigntoManager(Employees emp, String managerName) {
 		// TODO Auto-generated method stub
 		
-		Employees manager = empRepo.findById(managerID)
-				.orElseThrow(() -> new EmployeeNotFoundException("The Manager not found for ID :" + managerID));
+		Employees manager = empRepo.findByFirstname(managerName)
+				.orElseThrow(() -> new EmployeeNotFoundException("The Manager not found for Name :" + managerName));
 		
 		
 		if(!manager.getUser().getRole().equals(RoleTypes.MANAGER)) {

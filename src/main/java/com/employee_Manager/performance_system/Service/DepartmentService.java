@@ -22,9 +22,9 @@ public class DepartmentService implements DepartmentServiceInterface {
 	public Departments addDepartments(Departments departments) {
 		// TODO Auto-generated method stub
 
-		Departments dept = DeptRepo.save(departments);
+		
 
-		return dept;
+		return DeptRepo.save(departments);
 	}
 
 	@Override

@@ -15,21 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DtoLayer.EMPFeedBackDTO;
 import com.employee_Manager.performance_system.Entity.EMPFeedBack;
+import com.employee_Manager.performance_system.Service.FeedbackService;
 import com.employee_Manager.performance_system.Service.FeedbackServiceIMP;
 import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
-@RequestMapping("/api/feedback")
+@RequestMapping("/api/")
 public class EMPFeedBackController {
 
-	private final FeedbackServiceIMP feedbackServiceIMP;
+	private final FeedbackService feedbackServiceIMP;
 
-	public EMPFeedBackController(FeedbackServiceIMP feedbackServiceIMP) {
+	public EMPFeedBackController(FeedbackService feedbackServiceIMP) {
 		super();
 		this.feedbackServiceIMP = feedbackServiceIMP;
 	}
 
-	@PostMapping("/add")
+	@PostMapping("manager/feedback/add")
 	public ResponseEntity<EMPFeedBackDTO> addFeedbacksToEmployee(@RequestParam Integer givenTo,
 			@RequestParam Integer givenBy, @RequestBody EMPFeedBack feedback) {
 
@@ -38,7 +39,7 @@ public class EMPFeedBackController {
 				HttpStatus.CREATED);
 	}
 
-	@GetMapping("/getall-by/{id}")
+	@GetMapping("feedback/getall-by/{id}")
 	public ResponseEntity<List<EMPFeedBackDTO>> getAllFeedbackByEmpId(@PathVariable Integer id) {
 
 		List<EMPFeedBack> feedback = feedbackServiceIMP.getAllFeedbackByEmpId(id);

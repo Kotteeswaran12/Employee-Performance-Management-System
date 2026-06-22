@@ -7,13 +7,15 @@ public interface UserInfoService {
 	
 	UserInfo createUser(String empID ,UserInfo user);
 	
-	UserInfo getUserById(Integer id);
+	UserInfo getUserById(String username);
 	
 	UserInfo getUserByUsername(String username);
 	
 	void deleteUserById(Integer id);
 	
 	UserInfo changepasword(String password , String username);
+
+	UserInfo createAdmin(UserInfo user);
 	
 
 }

@@ -21,13 +21,13 @@ import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 
 @RestController
-@RequestMapping("/api/department")
+@RequestMapping("/api/")
 public class DepartmentController {
 
 	@Autowired
 	private DepartmentService deptService;
 
-	@PostMapping("/add")
+	@PostMapping("admin/department/add")
 	public ResponseEntity<DepartmentResponseDTO> addDepartment(@RequestBody Departments dept) {
 		
 		return new ResponseEntity<>(
@@ -36,14 +36,14 @@ public class DepartmentController {
 				, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/deleteBy/{id}")
+	@DeleteMapping("admin/department/deleteBy/{id}")
 	public ResponseEntity<DepartmentResponseDTO> deleteDepartment(@PathVariable Integer id) {
 		deptService.deleteDeptById(id);
 
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/getall")
+	@GetMapping("admin/department/getall")
 	public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartment() {
 		
 		List<Departments> dept = deptService.getAllDepartments() ;
@@ -58,7 +58,7 @@ public class DepartmentController {
 				, HttpStatus.OK);
 	}
 
-	@GetMapping("/getBy/{id}")
+	@GetMapping("department/getBy/{id}")
 	public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Integer id) {
 		return new ResponseEntity<>(
 				DTOMapper.toDepartmentDto(deptService.getDeprtById(id))

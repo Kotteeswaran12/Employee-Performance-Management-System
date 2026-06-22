@@ -11,7 +11,7 @@ public interface LeaveSerivece {
 
 	List<ApplyLeave> getAllEmployeeLeavesByEmpId(Integer id);
 
-	ApplyLeave applyForLeave(ApplyLeave leave , Integer id);
+	ApplyLeave applyForLeave(ApplyLeave leave , String username);
 
 	void withDrawlLeaveById(Integer id);
 

@@ -16,33 +16,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DtoLayer.TaskDTO;
 import com.employee_Manager.performance_system.Entity.Task;
+import com.employee_Manager.performance_system.Service.TaskService;
 import com.employee_Manager.performance_system.Service.TaskServiceIMP;
 import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
-@RequestMapping("/api/task")
+@RequestMapping("/api/")
 public class TaskController {
 
-	private final TaskServiceIMP taskService;
+	private final TaskService taskService;
 	
 	
 
-	public TaskController(TaskServiceIMP taskService) {
+	public TaskController(TaskService taskService) {
 		super();
 		this.taskService = taskService;
 	}
 
-	@PostMapping("/add/{id}")
+	@PostMapping("manager/task/add/{id}")
 	public ResponseEntity<TaskDTO> addtask(@PathVariable Integer id, @RequestBody Task task) {
 		return new ResponseEntity<>(DTOMapper.toTaskDTo(taskService.createtask(task, id)), HttpStatus.CREATED);
 	}
 
-	@PostMapping("/update")
+	@PostMapping("manager/task/update")
 	public ResponseEntity<TaskDTO> updateTask(@RequestBody Task task) {
 		return new ResponseEntity<>(DTOMapper.toTaskDTo(taskService.updateTask(task)), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/get-all")
+	@GetMapping("manager/task/get-all")
 	public ResponseEntity<List<TaskDTO>> getAllTask() {
 		
 		List<Task> task = taskService.getAlltask();
@@ -55,12 +56,12 @@ public class TaskController {
 		return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/get-By/{id}")
+	@GetMapping("manager/task/get-By/{id}")
 	public ResponseEntity<TaskDTO> getTaskbyId(@PathVariable Integer id) {
 		return new ResponseEntity<>(DTOMapper.toTaskDTo(taskService.getTaskById(id)), HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/delete-by/{id}")
+	@DeleteMapping("manager/delete-by/{id}")
 	public ResponseEntity<Task> deleteTaskbyId(@PathVariable Integer id) {
 		taskService.deleteTaskById(id);
 		return ResponseEntity.noContent().build();

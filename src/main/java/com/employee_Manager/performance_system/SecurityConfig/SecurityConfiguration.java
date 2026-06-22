@@ -27,18 +27,25 @@ public class SecurityConfiguration {
 
 		a.
 
-				requestMatchers("/api/user/add-user/{empId}", "/api/user/log-in").permitAll()
+				requestMatchers( "/api/admin/user/add-admin" ,"/api/user/signUp/{empId}" ,"/api/user/log-in").permitAll()
+				
+				.requestMatchers("/api/manager/**").hasRole("MANAGER")
+				.requestMatchers("/api/admin/**").hasRole("ADMIN")
+				.requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
+				
 				.anyRequest()
 				.authenticated()
 
 		).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.httpBasic(Customizer.withDefaults())
-//				.formLogin(Customizer.withDefaults())
+
 
 				.build();
 
 	}
+	
+
 
 	
 }

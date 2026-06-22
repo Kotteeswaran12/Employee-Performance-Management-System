@@ -15,21 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DtoLayer.TaskAssignmentsDTO;
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
+import com.employee_Manager.performance_system.Service.TaskAssignmentService;
 import com.employee_Manager.performance_system.Service.TaskAssignmentServiceIMP;
 import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
-@RequestMapping("/api/taskAssignment")
+@RequestMapping("/api/")
 public class TaskAssignmentController {
 
-	private final TaskAssignmentServiceIMP taskAssignmentService;
+	private final TaskAssignmentService taskAssignmentService;
 
-	public TaskAssignmentController(TaskAssignmentServiceIMP taskAssignmentService) {
+	public TaskAssignmentController(TaskAssignmentService taskAssignmentService) {
 		super();
 		this.taskAssignmentService = taskAssignmentService;
 	}
 
-	@PostMapping("/assign-task/{taskid}/")
+	@PostMapping("manager/taskAssignment/assign-task/{taskid}/")
 	public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
 			@RequestParam Integer employeeId, @RequestParam Integer managerid) {
 
@@ -39,21 +40,21 @@ public class TaskAssignmentController {
 
 	}
 
-	@PostMapping("/start-task/{id}")
+	@PostMapping("employee/taskAssignment/start-task/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> processingTask(@PathVariable Integer id) {
 
 		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.processingTask(id)),
 				HttpStatus.OK);
 	}
 
-	@PostMapping("/complete-task/{id}")
+	@PostMapping("employee/taskAssignment/complete-task/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> completeTask(@PathVariable Integer id) {
 
 		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.completedTask(id)),
 				HttpStatus.OK);
 	}
 
-	@GetMapping("/getByEmployee/{id}")
+	@GetMapping("taskAssignment/getByEmployee/{id}")
 	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToEmployee(@PathVariable Integer id) {
 
 		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToEmployee(id);
@@ -67,7 +68,7 @@ public class TaskAssignmentController {
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
-	@GetMapping("/getbyManager/{id}")
+	@GetMapping("taskAssignment/getbyManager/{id}")
 	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToManager(@PathVariable Integer id) {
 
 		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToManager(id);

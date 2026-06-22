@@ -147,7 +147,7 @@ public class DTOMapper {
 
 		dto.setCreatedate(user.getCreatedate());
 		dto.setEmail(user.getEmail());
-		dto.setEmployees(user.getEmployees().getFirstname());
+		dto.setEmployees(user.getEmployees()!=null? user.getEmployees().getFirstname() : null);
 		dto.setId(user.getId());
 		dto.setPassword(user.getPassword());
 		dto.setRole(user.getRole());

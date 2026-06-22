@@ -3,8 +3,6 @@ package com.employee_Manager.performance_system.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
@@ -31,10 +29,10 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 	}
 
 	@Override
-	public ApplyLeave applyForLeave(ApplyLeave leave, Integer id) {
+	public ApplyLeave applyForLeave(ApplyLeave leave, String username) {
 		// TODO Auto-generated method stub
-		Employees emp = empRepo.findById(id)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee With ID : " + id + "Not Found !!"));
+		Employees emp = empRepo.findByFirstname(username)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee With username : " + username + "Not Found !!"));
 		leave.setStatus(LeaveStatus.PENDING);
 		leave.setEmployees(emp);
 

@@ -28,12 +28,12 @@ public class AttendanceServiceIMP implements AttendanceService {
 	}
 
 	@Override
-	public Attendance checkIn(Integer empId) {
+	public Attendance checkIn(String username) {
 
-		Employees emp = employeeRepository.findById(empId)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + empId));
+		Employees emp = employeeRepository.findByFirstname(username)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
 
-		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(empId, LocalDate.now())
+		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(emp.getId(), LocalDate.now())
 				.orElse(new Attendance());
 
 		if (attendance.getCheckIn() != null) {
@@ -51,9 +51,11 @@ public class AttendanceServiceIMP implements AttendanceService {
 	}
 
 	@Override
-	public Attendance checkOutAndCalculateWorkingHours(Integer empId) {
+	public Attendance checkOutAndCalculateWorkingHours(String username) {
+		Employees emp = employeeRepository.findByFirstname(username)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
 
-		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(empId, LocalDate.now())
+		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(emp.getId(), LocalDate.now())
 				.orElseThrow(() -> new AttendanceException("Try To Check in First and try Check out !!"));
 
 		if (attendance.getCheckOut() != null) {
@@ -70,10 +72,12 @@ public class AttendanceServiceIMP implements AttendanceService {
 	}
 
 	@Override
-	public List<Attendance> getAllAttendaceByEmployeeId(Integer empId) {
-		// TODO Auto-generated method stub
+	public List<Attendance> getAllAttendaceByEmployeeId(String username) {
 
-		List<Attendance> attendances = attendanceRepository.findByEmployeesId(empId);
+		Employees emp = employeeRepository.findByFirstname(username)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
+
+		List<Attendance> attendances = attendanceRepository.findByEmployeesId(emp.getId());
 
 		if (attendances == null) {
 			throw new AttendanceException("No Attendace Found !!");

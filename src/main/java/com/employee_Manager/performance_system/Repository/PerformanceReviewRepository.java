@@ -9,4 +9,6 @@ import com.employee_Manager.performance_system.Entity.PerformanceReview;
 public interface PerformanceReviewRepository extends JpaRepository<PerformanceReview, Integer>{
 
 	List<PerformanceReview> findByEmployees_id(Integer id);
+	
+	List<PerformanceReview> findByEmployees_firstname(String firstname); 
 }

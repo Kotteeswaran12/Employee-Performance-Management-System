@@ -21,6 +21,6 @@ public interface PerformanceReviewService {
 
 	Integer calculateFeedbackScore(Employees empId);
 	
-	List<PerformanceReview> getAllPerformanceReviewById(Integer id);
+	List<PerformanceReview> getAllPerformanceReviewById(String username);
 
 }

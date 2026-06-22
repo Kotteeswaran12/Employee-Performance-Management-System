@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,26 +16,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DtoLayer.EmployeeResponseDTO;
 import com.employee_Manager.performance_system.Entity.Employees;
+import com.employee_Manager.performance_system.Service.EmployeeService;
 import com.employee_Manager.performance_system.Service.EmployeeServiceIMP;
 import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 
 @RestController
-@RequestMapping("/api/employee")
+@RequestMapping("/api")
 public class EmployeeController {
 
-	private final EmployeeServiceIMP employeeService;
+	private final EmployeeService employeeService;
 
-	public EmployeeController(EmployeeServiceIMP employeeService) {
+	public EmployeeController(EmployeeService employeeService) {
 		super();
 		this.employeeService = employeeService;
 	}
 
 //	Access by Manager
-	@GetMapping("/get-all")
-	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees() {
+	@GetMapping("manager/get-all")
+	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication) {
 
-		List<Employees> employees = employeeService.getAllEmployees();
+		List<Employees> employees = employeeService.getAllEmployees(authentication.getName());
 
 		List<EmployeeResponseDTO> dtos = new ArrayList<>();
 
@@ -49,7 +51,7 @@ public class EmployeeController {
 	}
 
 //	Access only by ADMIN
-	@PostMapping("/add-toDept/{deptId}")
+	@PostMapping("admin/add-toDept/{deptId}")
 	public ResponseEntity<EmployeeResponseDTO> addEmployees(@RequestBody Employees emp, @PathVariable Integer deptId) {
 
 		Employees e = employeeService.addEmployees(emp, deptId);
@@ -60,7 +62,7 @@ public class EmployeeController {
 	}
 
 //	Access only by ADMIN
-	@DeleteMapping("/deleteBy/{id}")
+	@DeleteMapping("admin/deleteBy/{id}")
 	public ResponseEntity<EmployeeResponseDTO> deleteEmployeeById(@PathVariable Integer id) {
 
 		Employees e = employeeService.deleteEmployeeById(id);
@@ -80,11 +82,11 @@ public class EmployeeController {
 	}
 
 //	Access only by Manager
-	@PostMapping("/add-empByManager/{managerID}")
+	@PostMapping("manager/add-empByManager/")
 	public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody Employees emp,
-			@PathVariable Integer managerID) {
+			Authentication authentication) {
 
-		Employees e = employeeService.addEmployeeAndAssigntoManager(emp, managerID);
+		Employees e = employeeService.addEmployeeAndAssigntoManager(emp, authentication.getName());
 		
 		
 		return new ResponseEntity<>( DTOMapper.toEmployeeDto(e) ,

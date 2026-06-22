@@ -139,11 +139,11 @@ public class PerformanceReviewServiceIMP implements PerformanceReviewService {
 	}
 
 	@Override
-	public List<PerformanceReview> getAllPerformanceReviewById(Integer id) {
+	public List<PerformanceReview> getAllPerformanceReviewById(String username) {
 		// TODO Auto-generated method stub
 		
 		
-		return performanceReviewRepository.findByEmployees_id(id);
+		return performanceReviewRepository.findByEmployees_firstname(username);
 	}
 
 }

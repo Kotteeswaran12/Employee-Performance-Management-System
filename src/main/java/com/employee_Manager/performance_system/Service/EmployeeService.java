@@ -8,7 +8,7 @@ import com.employee_Manager.performance_system.Entity.Employees;
 
 public interface EmployeeService {
 
-	List<Employees>  getAllEmployees();
+	List<Employees>  getAllEmployees(String username);
 
 	Employees addEmployees(Employees emp , Integer deptId);
 
@@ -16,6 +16,6 @@ public interface EmployeeService {
 
 	Employees getEmployeeById(Integer id);
 	
-	Employees addEmployeeAndAssigntoManager (Employees emp , Integer managerID);
+	Employees addEmployeeAndAssigntoManager (Employees emp ,String managerName);
 
 }

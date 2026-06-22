@@ -12,4 +12,5 @@ import com.employee_Manager.performance_system.Entity.ApplyLeave;
 public interface ApplyLeaveRepo extends JpaRepository<ApplyLeave, Integer> {
 
 	List<ApplyLeave> findByemployeesId(Integer id);
+	
 }

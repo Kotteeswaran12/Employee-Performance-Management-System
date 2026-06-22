@@ -1,16 +1,21 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Employees;
 import com.employee_Manager.performance_system.Entity.UserInfo;
+import com.employee_Manager.performance_system.Enums.RoleTypes;
+import com.employee_Manager.performance_system.Exceptions.AdminAlreadyExists;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.UserNotFoundException;
 import com.employee_Manager.performance_system.Repository.EmployeeRepository;
 import com.employee_Manager.performance_system.Repository.UserInfoRepository;
+
+import net.bytebuddy.implementation.bytecode.Throw;
 
 @Service
 public class UserInfoServiceIMP implements UserInfoService {
@@ -47,10 +52,10 @@ public class UserInfoServiceIMP implements UserInfoService {
 }
 
 	@Override
-	public UserInfo getUserById(Integer id) {
+	public UserInfo getUserById(String username) {
 		// TODO Auto-generated method stub
-		return userInfoRepository.findById(id)
-				.orElseThrow(() -> new UserNotFoundException("The User not Found for Id :" + id));
+		return userInfoRepository.findByUsername(username)
+				.orElseThrow(() -> new UserNotFoundException("The User not Found for name :" + username));
 	}
 
 	@Override
@@ -64,9 +69,9 @@ public class UserInfoServiceIMP implements UserInfoService {
 	public void deleteUserById(Integer id) {
 		// TODO Auto-generated method stub
 
-		UserInfo user = getUserById(id);
+		
 
-		userInfoRepository.deleteById(user.getId());
+		userInfoRepository.deleteById(id);
 
 	}
 
@@ -77,6 +82,27 @@ public class UserInfoServiceIMP implements UserInfoService {
 
 		user.setPassword(password);
 
+		return userInfoRepository.save(user);
+	}
+
+	@Override
+	public UserInfo createAdmin(UserInfo user) {
+		// TODO Auto-generated method stub
+		
+//		UserInfo existingUserInfo = userInfoRepository.findByUsername(user.getUsername())
+//				.orElse( user);
+//		
+//		if(!Objects.isNull(existingUserInfo) &&  existingUserInfo.getRole().equals(RoleTypes.ADMIN)  ) {
+//			
+//			throw new AdminAlreadyExists("The Admin alredy Exsist with name :"+ user.getUsername() + " And He is Already Admin also");
+//			
+//		}
+//		
+		user.setRole(RoleTypes.ADMIN);
+		user.setCreatedate(LocalDate.now());
+		
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		
 		return userInfoRepository.save(user);
 	}
 

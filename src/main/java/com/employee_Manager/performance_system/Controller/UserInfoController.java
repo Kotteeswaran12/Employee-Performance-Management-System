@@ -2,6 +2,7 @@ package com.employee_Manager.performance_system.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,29 +15,39 @@ import org.springframework.web.bind.annotation.RestController;
 import com.employee_Manager.performance_system.DtoLayer.UserInfoDTO;
 import com.employee_Manager.performance_system.Entity.UserInfo;
 import com.employee_Manager.performance_system.Service.AuthService;
+import com.employee_Manager.performance_system.Service.UserInfoService;
 import com.employee_Manager.performance_system.Service.UserInfoServiceIMP;
 import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/")
 public class UserInfoController {
 
-	private final UserInfoServiceIMP userInfoServiceIMP;
+	private final UserInfoService userInfoServiceIMP;
 
 	private final AuthService authService;
 
-	public UserInfoController(UserInfoServiceIMP userInfoServiceIMP, AuthService authService) {
+	public UserInfoController(UserInfoService userInfoServiceIMP, AuthService authService) {
 		super();
 		this.userInfoServiceIMP = userInfoServiceIMP;
 		this.authService = authService;
 	}
 
-	@GetMapping("/log-in")
+	@GetMapping("user/log-in")
 	public String getAuthenticate(@RequestBody UserInfo user) {
 		return authService.getAuthentication(user);
 	}
+	
+	@PostMapping("admin/user/add-admin")
+	public ResponseEntity<UserInfoDTO> createAdmin(@RequestBody UserInfo user) {
 
-	@PostMapping("/add-user/{empId}")
+		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createAdmin(user)),
+				HttpStatus.CREATED
+
+		);
+	}
+
+	@PostMapping("user/signUp/{empId}")
 	public ResponseEntity<UserInfoDTO> createUser(@PathVariable String empId, @RequestBody UserInfo user) {
 
 		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createUser(empId, user)),
@@ -45,16 +56,16 @@ public class UserInfoController {
 		);
 	}
 
-	@GetMapping("/get-userBy/{id}")
-	public ResponseEntity<UserInfoDTO> getUserById(@PathVariable Integer id) {
+//	@GetMapping("user/get-userBy")
+//	public ResponseEntity<UserInfoDTO> getUserById(Authentication authentication) {
+//
+//		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.getUserById(authentication.getName())), HttpStatus.OK
+//
+//		);
+//
+//	}
 
-		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.getUserById(id)), HttpStatus.OK
-
-		);
-
-	}
-
-	@GetMapping("/get-userByName")
+	@GetMapping("user/get-userByName")
 	public ResponseEntity<UserInfoDTO> getUserByUsername(@RequestParam String username) {
 
 		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.getUserByUsername(username)),
@@ -62,16 +73,16 @@ public class UserInfoController {
 
 	}
 
-	@DeleteMapping("/delete-user/{id}")
+	@DeleteMapping("admin/user/delete-user/{id}")
 	public ResponseEntity<UserInfo> deleteUserById(@PathVariable Integer id) {
 		userInfoServiceIMP.deleteUserById(id);
 
 		return ResponseEntity.noContent().build();
 	}
 
-	@PostMapping("/changePassword")
-	public ResponseEntity<UserInfoDTO> changepasword(@RequestParam String password, @RequestParam String username) {
-		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.changepasword(password, username)),
+	@PostMapping("user/changePassword")
+	public ResponseEntity<UserInfoDTO> changepasword(@RequestParam String password, Authentication authentication) {
+		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.changepasword(password, authentication.getName())),
 				HttpStatus.OK);
 	}
 
