@@ -13,6 +13,7 @@ public class GlobalExceptionHandeler {
 	@ExceptionHandler({ AttendanceException.class, DepartmentNotFoundException.class, EmployeeManagerException.class,
 			EmployeeNotFoundException.class, LeaveNotFoundException.class, NotaManagerException.class,
 			TaskAssignmentException.class, TaskException.class, UserNotFoundException.class , RuntimeException.class })
+	
 	public ResponseEntity<ErrorResponse> handelGlobalException(RuntimeException e) {
 		ErrorResponse er = new ErrorResponse();
 

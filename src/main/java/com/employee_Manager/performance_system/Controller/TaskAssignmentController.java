@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.employee_Manager.performance_system.DtoLayer.TaskAssignmentsDTO;
+import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
+import com.employee_Manager.performance_system.ResponseDtoLayer.TaskAssignmentsDTO;
 import com.employee_Manager.performance_system.Service.TaskAssignmentService;
-import com.employee_Manager.performance_system.Service.TaskAssignmentServiceIMP;
-import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
 @RequestMapping("/api/")
@@ -30,7 +31,8 @@ public class TaskAssignmentController {
 		this.taskAssignmentService = taskAssignmentService;
 	}
 
-	@PostMapping("manager/taskAssignment/assign-task/{taskid}/")
+	@PreAuthorize("hasRole('MANAGER')")
+	@PostMapping("/taskAssignment/{taskid}")
 	public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
 			@RequestParam Integer employeeId, @RequestParam Integer managerid) {
 
@@ -40,24 +42,29 @@ public class TaskAssignmentController {
 
 	}
 
-	@PostMapping("employee/taskAssignment/start-task/{id}")
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@PostMapping("/taskAssignment/start/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> processingTask(@PathVariable Integer id) {
 
 		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.processingTask(id)),
 				HttpStatus.OK);
 	}
 
-	@PostMapping("employee/taskAssignment/complete-task/{id}")
+	
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@PostMapping("/taskAssignment/complete/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> completeTask(@PathVariable Integer id) {
 
 		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.completedTask(id)),
 				HttpStatus.OK);
 	}
 
-	@GetMapping("taskAssignment/getByEmployee/{id}")
-	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToEmployee(@PathVariable Integer id) {
+	
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@GetMapping("taskAssignment/employee")
+	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication) {
 
-		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToEmployee(id);
+		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToEmployee(authentication.getName());
 
 		List<TaskAssignmentsDTO> dto = new ArrayList<>();
 
@@ -68,10 +75,11 @@ public class TaskAssignmentController {
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
-	@GetMapping("taskAssignment/getbyManager/{id}")
-	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToManager(@PathVariable Integer id) {
+	@PreAuthorize("hasRole('MANAGER')")
+	@GetMapping("taskAssignment/manager")
+	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication) {
 
-		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToManager(id);
+		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToManager(authentication.getName());
 
 		List<TaskAssignmentsDTO> dto = new ArrayList<>();
 

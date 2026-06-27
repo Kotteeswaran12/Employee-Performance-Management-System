@@ -21,7 +21,7 @@ public class UserInfo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(unique = true, nullable = false)
+	@Column(unique = true)
 	private String username;
 	@Email
 	@Column(unique = true, nullable = false)

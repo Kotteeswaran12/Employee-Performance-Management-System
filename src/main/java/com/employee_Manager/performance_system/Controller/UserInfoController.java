@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.employee_Manager.performance_system.DtoLayer.UserInfoDTO;
+import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
+import com.employee_Manager.performance_system.DTOMapper.RequestDTOMapper;
 import com.employee_Manager.performance_system.Entity.UserInfo;
+import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.UserInfoDTO;
 import com.employee_Manager.performance_system.Service.AuthService;
 import com.employee_Manager.performance_system.Service.UserInfoService;
-import com.employee_Manager.performance_system.Service.UserInfoServiceIMP;
-import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
 @RequestMapping("/api/")
@@ -26,11 +27,15 @@ public class UserInfoController {
 	private final UserInfoService userInfoServiceIMP;
 
 	private final AuthService authService;
+	private final RequestDTOMapper requestDTOMapper;
 
-	public UserInfoController(UserInfoService userInfoServiceIMP, AuthService authService) {
+	
+	public UserInfoController(UserInfoService userInfoServiceIMP, AuthService authService,
+			RequestDTOMapper requestDTOMapper) {
 		super();
 		this.userInfoServiceIMP = userInfoServiceIMP;
 		this.authService = authService;
+		this.requestDTOMapper = requestDTOMapper;
 	}
 
 	@GetMapping("user/log-in")
@@ -39,18 +44,18 @@ public class UserInfoController {
 	}
 	
 	@PostMapping("admin/user/add-admin")
-	public ResponseEntity<UserInfoDTO> createAdmin(@RequestBody UserInfo user) {
+	public ResponseEntity<UserInfoDTO> createAdmin(@RequestBody UserInfoRequestDTO user) {
 
-		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createAdmin(user)),
+		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createAdmin(requestDTOMapper.toUserInfoEntity(user))),
 				HttpStatus.CREATED
 
 		);
 	}
 
 	@PostMapping("user/signUp/{empId}")
-	public ResponseEntity<UserInfoDTO> createUser(@PathVariable String empId, @RequestBody UserInfo user) {
+	public ResponseEntity<UserInfoDTO> createUser(@PathVariable String empId, @RequestBody UserInfoRequestDTO user) {
 
-		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createUser(empId, user)),
+		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.createUser(empId, requestDTOMapper.toUserInfoEntity(user))),
 				HttpStatus.CREATED
 
 		);

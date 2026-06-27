@@ -6,11 +6,11 @@ import com.employee_Manager.performance_system.Entity.Task;
 
 public interface TaskService {
 	
-	public Task createtask(Task task , Integer createById);
+	public Task createtask(Task task , String managerName);
 	
 	public Task updateTask(Task task);
 	
-	public List<Task> getAlltask();
+	public List<Task> getAlltask(String managerName);
 	
 	public Task getTaskById(Integer id);
 	

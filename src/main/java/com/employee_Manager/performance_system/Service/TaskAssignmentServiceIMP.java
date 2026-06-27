@@ -107,15 +107,22 @@ public class TaskAssignmentServiceIMP implements TaskAssignmentService {
 	}
 
 	@Override
-	public List<TaskAssignments> getTaskAssignToEmployee(Integer id) {
+	public List<TaskAssignments> getTaskAssignToEmployee(String  empName) {
 		// TODO Auto-generated method stub
-		return taskAssignmentRepository.findByAssignedTo_Id(id);
+		
+		Employees emp = employeeRepository.findByFirstname(empName)
+				.orElseThrow(()-> new EmployeeNotFoundException("Employee not Found for name : "+ empName));
+		
+		return taskAssignmentRepository.findByAssignedTo_Id(emp.getId());
+		
 	}
 
 	@Override
-	public List<TaskAssignments> getTaskAssignToManager(Integer id) {
-		// TODO Auto-generated method stub
-		return taskAssignmentRepository.findByAssignedBy_Id(id);
+	public List<TaskAssignments> getTaskAssignToManager(String managerName) {
+		Employees emp = employeeRepository.findByFirstname(managerName)
+				.orElseThrow(()-> new EmployeeNotFoundException("Manager not Found for name : "+ managerName));
+		
+		return taskAssignmentRepository.findByAssignedTo_Id(emp.getId());
 	}
 
 }

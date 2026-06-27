@@ -3,6 +3,7 @@ package com.employee_Manager.performance_system.SecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
 	private final JWTFilter jwtFilter;
@@ -29,9 +31,9 @@ public class SecurityConfiguration {
 
 				requestMatchers( "/api/admin/user/add-admin" ,"/api/user/signUp/{empId}" ,"/api/user/log-in").permitAll()
 				
-				.requestMatchers("/api/manager/**").hasRole("MANAGER")
-				.requestMatchers("/api/admin/**").hasRole("ADMIN")
-				.requestMatchers("/api/employee/**").hasRole("EMPLOYEE")
+				.requestMatchers("/api/manager/**").hasAnyRole("MANAGER" , "ADMIN")
+				.requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
+				.requestMatchers("/api/employee/**").hasAnyRole("MANAGER" , "ADMIN","EMPLOYEE")
 				
 				.anyRequest()
 				.authenticated()

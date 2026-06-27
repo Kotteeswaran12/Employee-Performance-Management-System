@@ -1,9 +1,9 @@
-package com.employee_Manager.performance_system.DtoLayer;
+package com.employee_Manager.performance_system.RequestDTO;
 
 
-public class EMPFeedBackDTO {
+public class EMPFeedBackRequestDTO {
 
-	private Integer id;
+	
 
 	private Integer communicationScore;
 	private Integer teamworkScore;
@@ -11,18 +11,7 @@ public class EMPFeedBackDTO {
 	private Integer knowledgeSharingScore;
 	private String comments;
 
-	private String employeName;
-
-	private String reviewedBy;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	
 	public Integer getCommunicationScore() {
 		return communicationScore;
 	}
@@ -63,28 +52,13 @@ public class EMPFeedBackDTO {
 		this.comments = comments;
 	}
 
-	public String getEmployeName() {
-		return employeName;
-	}
-
-	public void setEmployeName(String employeName) {
-		this.employeName = employeName;
-	}
-
-	public String getReviewedBy() {
-		return reviewedBy;
-	}
-
-	public void setReviewedBy(String reviewedBy) {
-		this.reviewedBy = reviewedBy;
-	}
+	
 
 	@Override
 	public String toString() {
-		return "EMPFeedBackDTO [id=" + id + ", communicationScore=" + communicationScore + ", teamworkScore="
+		return "EMPFeedBackDTO [ communicationScore=" + communicationScore + ", teamworkScore="
 				+ teamworkScore + ", helpfullnessScore=" + helpfullnessScore + ", knowledgeSharingScore="
-				+ knowledgeSharingScore + ", comments=" + comments + ", employeName=" + employeName + ", reviewedBy="
-				+ reviewedBy + "]";
+				+ knowledgeSharingScore + ", comments=" + comments + "]";
 	}
 
 }

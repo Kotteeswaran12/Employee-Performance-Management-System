@@ -16,6 +16,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -32,42 +33,57 @@ public class JWTFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		
-		String auth = request.getHeader("Authorization");
-		
-		if(auth == null || !auth.startsWith("Bearer ")) {
+
+		System.out.println("IM Filletr JWT");
+		String authHeader = request.getHeader("Authorization");
+
+		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
-			return ;
+			return;
 		}
-		
-		
-		String jwt = auth.substring(7);
-		String username = jwtService.getusername(jwt);
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		if(jwt !=null && authentication == null) {
+
+		String jwt = authHeader.substring(7);
+
+		try {
+			System.out.println("JWT : "+ jwt);
+	
+
+			String username = jwtService.getusername(jwt);
+			System.out.println("Username :" +  username);
 			
-			UserDetails user = serviceIMP.loadUserByUsername(username);
 			
-			if(jwtService.isTokenValid(jwt , user)) {
-				
-			UsernamePasswordAuthenticationToken authenticationFilter =new UsernamePasswordAuthenticationToken(
-					user , null ,  user.getAuthorities()
-					);
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			System.out.println("Auth Before : "+ authHeader);
 			
-			authenticationFilter.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 			
-			SecurityContextHolder.getContext().setAuthentication(authenticationFilter);
-			
+			if (username != null && authentication == null) {
+
+				UserDetails user = serviceIMP.loadUserByUsername(username);
+				System.out.println("User load : " + user);
+
+				if (jwtService.isTokenValid(jwt, user)) {
+					
+					System.out.println("Token Valid");
+
+					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null,
+							user.getAuthorities());
+
+					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+					SecurityContextHolder.getContext().setAuthentication(authToken);
+					
+					System.out.println("AuthToken : "+ authToken.getAuthorities());
+					
+					System.out.println("Sucessfully Valid JWT");
+				}
 			}
-			
+
+		} catch (Exception e) {
+			// Log if needed
+			e.printStackTrace();
 		}
-		
+
 		filterChain.doFilter(request, response);
-		
 	}
 
 }

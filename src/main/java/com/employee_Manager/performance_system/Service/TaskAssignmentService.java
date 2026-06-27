@@ -17,9 +17,9 @@ public interface TaskAssignmentService {
 	
 	public TaskAssignments completedTask(Integer id);
 	
-	public List<TaskAssignments> getTaskAssignToEmployee(Integer id);
+	public List<TaskAssignments> getTaskAssignToEmployee(String  empName);
 	
-	public List<TaskAssignments> getTaskAssignToManager(Integer id);
+	public List<TaskAssignments> getTaskAssignToManager(String managerName);
 	
 	
 

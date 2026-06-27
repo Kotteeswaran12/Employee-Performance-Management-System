@@ -1,14 +1,5 @@
-package com.employee_Manager.performance_systemDTOMapper;
+package com.employee_Manager.performance_system.DTOMapper;
 
-import com.employee_Manager.performance_system.DtoLayer.ApplyLeaveDTO;
-import com.employee_Manager.performance_system.DtoLayer.AttendanceDTO;
-import com.employee_Manager.performance_system.DtoLayer.DepartmentResponseDTO;
-import com.employee_Manager.performance_system.DtoLayer.EMPFeedBackDTO;
-import com.employee_Manager.performance_system.DtoLayer.EmployeeResponseDTO;
-import com.employee_Manager.performance_system.DtoLayer.PerformanceReviewDTO;
-import com.employee_Manager.performance_system.DtoLayer.TaskAssignmentsDTO;
-import com.employee_Manager.performance_system.DtoLayer.TaskDTO;
-import com.employee_Manager.performance_system.DtoLayer.UserInfoDTO;
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
 import com.employee_Manager.performance_system.Entity.Attendance;
 import com.employee_Manager.performance_system.Entity.Departments;
@@ -18,6 +9,15 @@ import com.employee_Manager.performance_system.Entity.PerformanceReview;
 import com.employee_Manager.performance_system.Entity.Task;
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
 import com.employee_Manager.performance_system.Entity.UserInfo;
+import com.employee_Manager.performance_system.ResponseDtoLayer.ApplyLeaveDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.AttendanceDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.DepartmentResponseDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.EMPFeedBackDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.EmployeeResponseDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.PerformanceReviewDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.TaskAssignmentsDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.TaskDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.UserInfoDTO;
 
 public class DTOMapper {
 

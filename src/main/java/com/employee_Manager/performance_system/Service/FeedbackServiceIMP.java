@@ -25,10 +25,10 @@ public class FeedbackServiceIMP implements FeedbackService {
 	}
 
 	@Override
-	public EMPFeedBack addFeedbacksToEmployee(Integer to, Integer from, EMPFeedBack feedback) {
+	public EMPFeedBack addFeedbacksToEmployee(Integer to, String managerName, EMPFeedBack feedback) {
 		Employees employees = employeeRepository.findById(to)
 				.orElseThrow(() -> new EmployeeNotFoundException("Manager OR UserNot Found !!"));
-		Employees manager = employeeRepository.findById(from)
+		Employees manager = employeeRepository.findByFirstname(managerName)
 				.orElseThrow(() -> new EmployeeNotFoundException("Manager OR UserNot Found !!"));
 
 		if (!employees.getManager().getId().equals(manager.getId())) {
@@ -46,8 +46,8 @@ public class FeedbackServiceIMP implements FeedbackService {
 	}
 
 	@Override
-	public List<EMPFeedBack> getAllFeedbackByEmpId(Integer id) {
-		Employees employees = employeeRepository.findById(id)
+	public List<EMPFeedBack> getAllFeedbackByEmpId(String userName) {
+		Employees employees = employeeRepository.findByFirstname(userName)
 				.orElseThrow(() -> new EmployeeNotFoundException("Manager OR UserNot Found !!"));
 		
 		

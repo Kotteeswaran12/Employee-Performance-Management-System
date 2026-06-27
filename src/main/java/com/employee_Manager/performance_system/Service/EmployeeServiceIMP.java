@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Departments;
 import com.employee_Manager.performance_system.Entity.Employees;
+import com.employee_Manager.performance_system.Entity.UserInfo;
 import com.employee_Manager.performance_system.Enums.RoleTypes;
 import com.employee_Manager.performance_system.Exceptions.DepartmentNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
@@ -47,6 +48,8 @@ public class EmployeeServiceIMP implements EmployeeService {
 		
 		Departments depts = deptRepo.findById(deptId)
 				.orElseThrow(()-> new DepartmentNotFoundException("NO Department Found for DEPT-ID : " + deptId));
+		
+		
 		
 		emp.setDepartments(depts);
 		

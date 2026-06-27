@@ -36,6 +36,14 @@ public class UserInfoServiceIMP implements UserInfoService {
 				.orElseThrow(() -> new EmployeeNotFoundException("No Employee Found for EMPID : " + empID));
 
 		emp.setUser(user);
+		
+		if(empID.startsWith("EMP")) {
+			user.setRole(RoleTypes.EMPLOYEE);
+		}else {
+			user.setRole(RoleTypes.MANAGER);
+		}
+		
+		user.setUsername(emp.getFirstname());
 		user.setCreatedate(LocalDate.now());
 		user.setEmployees(emp);
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

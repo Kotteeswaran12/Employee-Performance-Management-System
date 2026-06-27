@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,29 +16,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.employee_Manager.performance_system.DtoLayer.ApplyLeaveDTO;
+import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
+import com.employee_Manager.performance_system.DTOMapper.RequestDTOMapper;
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
 import com.employee_Manager.performance_system.Enums.LeaveStatus;
+import com.employee_Manager.performance_system.RequestDTO.ApplyLeaveRequestDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.ApplyLeaveDTO;
 import com.employee_Manager.performance_system.Service.LeaveSerivece;
-import com.employee_Manager.performance_system.Service.LeaveSeriveceIMP;
 
-import com.employee_Manager.performance_systemDTOMapper.DTOMapper;
 
 @RestController
-@RequestMapping("api/")
+@RequestMapping("/api/")
 public class ApplyLeaveController {
 
 	private final LeaveSerivece leaveSerivece;
+	private final RequestDTOMapper requestdtoMapper;
 
-	public ApplyLeaveController(LeaveSerivece leaveSerivece) {
+	
+	
+public ApplyLeaveController(LeaveSerivece leaveSerivece, RequestDTOMapper requestdtoMapper) {
 		super();
 		this.leaveSerivece = leaveSerivece;
+		this.requestdtoMapper = requestdtoMapper;
 	}
 
-	
+
 //	Manager Functions
 	
-	@GetMapping("manager/leave/")
+	@PreAuthorize("hasRole('MANAGER')")
+	@GetMapping("/leave")
 	public ResponseEntity<List<ApplyLeaveDTO>> getAllEmployeeLeavesByEmpId(@RequestParam Integer id) {
 
 		List<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesByEmpId(id);
@@ -51,7 +58,10 @@ public class ApplyLeaveController {
 
 		return new ResponseEntity<>(dtoLeave, HttpStatus.OK);
 	}
-	@PostMapping("manager/leave/update-status")
+	
+	
+	@PreAuthorize("hasRole('MANAGER')")
+	@PostMapping("/leave")
 	ResponseEntity<ApplyLeaveDTO> setLeaveStatus(@RequestParam Integer id, @RequestParam LeaveStatus leaveStatus,
 			@RequestParam Integer aprovedId) {
 		return new ResponseEntity<>(DTOMapper.toApplyLeaveDto(leaveSerivece.setLeaveStatus(id, leaveStatus, aprovedId)),
@@ -61,25 +71,28 @@ public class ApplyLeaveController {
 	
 //	Employee Functions
 
-	@PostMapping("employee/leave/apply-leave/")
-	ResponseEntity<ApplyLeaveDTO> applyForLeave(@RequestBody ApplyLeave leave, Authentication authentication) {
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@PostMapping("/leave/apply")
+	ResponseEntity<ApplyLeaveDTO> applyForLeave(@RequestBody ApplyLeaveRequestDTO leave, Authentication authentication) {
 		
 		String username = authentication.getName();
 		
 //		System.out.println(authentication.getDetails() + "\t\t");
 		
-		return new ResponseEntity<>(DTOMapper.toApplyLeaveDto(leaveSerivece.applyForLeave(leave, username)),
+		return new ResponseEntity<>(DTOMapper.toApplyLeaveDto(leaveSerivece.applyForLeave(requestdtoMapper.toApplyLeaveEntity(leave), username)),
 				HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("employee/leave/delete-by/{id}")
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@DeleteMapping("/leave/{id}")
 	ResponseEntity<String> withDrawlLeaveById(@PathVariable Integer id) {
 
 		leaveSerivece.withDrawlLeaveById(id);
 		return new ResponseEntity<>("Sucessfully Withdrawed your Leave !!", HttpStatus.OK);
 	}
 
-	@GetMapping("employee/leave/get-status/{id}")
+	@PreAuthorize("hasRole('EMPLOYEE')")
+	@GetMapping("/leave/{id}")
 	ResponseEntity<LeaveStatus> getLeaveStatusById(@PathVariable Integer id) {
 		return new ResponseEntity<>(leaveSerivece.getLeaveStatusById(id), HttpStatus.OK);
 	}

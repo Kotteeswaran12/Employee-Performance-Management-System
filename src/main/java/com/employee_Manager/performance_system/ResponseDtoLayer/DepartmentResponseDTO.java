@@ -1,4 +1,4 @@
-package com.employee_Manager.performance_system.DtoLayer;
+package com.employee_Manager.performance_system.ResponseDtoLayer;
 
 public class DepartmentResponseDTO {
 
