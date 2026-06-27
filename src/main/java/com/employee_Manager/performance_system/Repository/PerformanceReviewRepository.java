@@ -1,6 +1,7 @@
 package com.employee_Manager.performance_system.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,7 @@ public interface PerformanceReviewRepository extends JpaRepository<PerformanceRe
 
 	List<PerformanceReview> findByEmployees_id(Integer id);
 	
-	List<PerformanceReview> findByEmployees_firstname(String firstname); 
+	List<PerformanceReview> findByEmployees_firstname(String firstname);
+
+	Optional<List<PerformanceReview>> findByEmployees_Empcode(String empcode); 
 }
