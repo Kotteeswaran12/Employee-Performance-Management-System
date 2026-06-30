@@ -21,6 +21,9 @@ import com.employee_Manager.performance_system.RequestDTO.EMPFeedBackRequestDTO;
 import com.employee_Manager.performance_system.ResponseDtoLayer.EMPFeedBackDTO;
 import com.employee_Manager.performance_system.Service.FeedbackService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/")
 public class EMPFeedBackController {
@@ -37,6 +40,8 @@ public class EMPFeedBackController {
 		this.feedbackServiceIMP = feedbackServiceIMP;
 	}
 
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(summary = "Manaer can add Feed Backs to the Employe" , description = "Manager can Give Feedback only to they subordinator !!")
 	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("feedback")
 	public ResponseEntity<EMPFeedBackDTO> addFeedbacksToEmployee(@RequestParam Integer givenTo,
@@ -47,6 +52,9 @@ public class EMPFeedBackController {
 				HttpStatus.CREATED);
 	}
 
+	
+	@Tag(name = "General APIs")
+	@Operation(summary = "Can Get the all Feebacks " )
 	@GetMapping("feedback")
 	public ResponseEntity<List<EMPFeedBackDTO>> getAllFeedbackByEmpId(Authentication authentication) {
 

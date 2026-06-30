@@ -18,4 +18,6 @@ public interface EmployeeService {
 	
 	Employees addEmployeeAndAssigntoManager (Employees emp ,String managerName);
 
+	Employees getEmployeByFirstName(String name);
+
 }

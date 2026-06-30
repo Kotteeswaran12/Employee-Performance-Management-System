@@ -15,6 +15,7 @@ import com.employee_Manager.performance_system.RequestDTO.EMPFeedBackRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.EmployeeRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.TaskRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.UserInfoDTO;
 
 @Component
 public class RequestDTOMapper {
@@ -96,6 +97,17 @@ public class RequestDTOMapper {
 
 		return userInfo;
 
+	}
+
+	public UserInfo toUserInfoEntity(UserInfoDTO user) {
+		// TODO Auto-generated method stub
+		UserInfo userInfo = new UserInfo();
+
+		userInfo.setUsername(user.getUsername());
+
+		userInfo.setPassword(user.getPassword());
+
+		return userInfo;
 	}
 
 }

@@ -18,6 +18,9 @@ import com.employee_Manager.performance_system.Entity.PerformanceReview;
 import com.employee_Manager.performance_system.ResponseDtoLayer.PerformanceReviewDTO;
 import com.employee_Manager.performance_system.Service.PerformanceReviewService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/")
 public class PerformanceReviewController {
@@ -29,6 +32,9 @@ public class PerformanceReviewController {
 	}
 	
 	
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(summary = "Manager Can Create a Review To They Employees" ,
+	description = "by Passing the Employee ID , ManagerID , QualityScore , Remarks  !!")
 	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("performanceReview/")
 	public ResponseEntity<PerformanceReviewDTO> createReview(@RequestParam Integer empId,
@@ -44,7 +50,12 @@ public class PerformanceReviewController {
 		
 	}
 	
-	@GetMapping("performanceReview/get-all/")
+	
+	
+
+	@Tag(name = "General APIs")
+	@Operation(summary = "can get all the Review ")
+	@GetMapping("performanceReview")
 	
 	public ResponseEntity<List<PerformanceReviewDTO>> getAllBYEmployeeId(Authentication authentication){
 		

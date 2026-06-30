@@ -22,6 +22,9 @@ import com.employee_Manager.performance_system.RequestDTO.EmployeeRequestDTO;
 import com.employee_Manager.performance_system.ResponseDtoLayer.EmployeeResponseDTO;
 import com.employee_Manager.performance_system.Service.EmployeeService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/")
 public class EmployeeController {
@@ -36,6 +39,12 @@ public class EmployeeController {
 	}
 
 //	Access by Manager
+	
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(
+			summary = "Get All Employees - Manager",
+			description = "Get all the Employee by Manager Referance "
+			)
 	@PreAuthorize("hasRole('MANAGER')")
 	@GetMapping("employee")
 	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication) {
@@ -53,7 +62,15 @@ public class EmployeeController {
 		return new ResponseEntity<>(dtos, HttpStatus.OK);
 	}
 
+	
+	
+	
 //	Access only by ADMIN
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(
+			summary = "Add Manager "
+			, description = "to a Department by using Department ID"
+			)
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("employee/manager/{deptId}")
 	public ResponseEntity<EmployeeResponseDTO> addEmployees(@RequestBody EmployeeRequestDTO emp,
@@ -66,7 +83,15 @@ public class EmployeeController {
 		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
 	}
 
+	
+	
+	
 //	Access only by ADMIN
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(
+			summary = "Delete any Employee "
+			, description = "By usind Employee ID"
+			)
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("employee/{id}")
 	public ResponseEntity<EmployeeResponseDTO> deleteEmployeeById(@PathVariable Integer id) {
@@ -75,16 +100,40 @@ public class EmployeeController {
 
 		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
 	}
+	
+	
+	
+	
+	
+	
+//	@Tag(name = "ADMIN - ONLY Access")
+	@Tag(name = "General APIs")
+	@Operation(
+			summary = "Get all Details of Employee "
+			, description = "By usind Employee Name Pass throught the JWT Token !!"
+			)
+	@GetMapping("/employee/by-UserName")
+	public ResponseEntity<EmployeeResponseDTO> getEmployeeById(Authentication authentication ) {
 
-	@GetMapping("/employee/{id}")
-	public ResponseEntity<EmployeeResponseDTO> getEmployeeById(@PathVariable Integer id) {
-
-		Employees e = employeeService.getEmployeeById(id);
+		Employees e = employeeService.getEmployeByFirstName(authentication.getName());
 
 		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.OK);
 	}
 
+	
+	
+	
+	
+	
+	
+	
 //	Access only by Manager
+	 
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(
+			summary = "Add Employee to the Manager Department "
+			, description = "Pass the Employees Details in Body "
+			)
 	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("employee")
 	public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody EmployeeRequestDTO emp,

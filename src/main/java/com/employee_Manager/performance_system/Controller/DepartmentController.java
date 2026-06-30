@@ -21,6 +21,9 @@ import com.employee_Manager.performance_system.RequestDTO.DepartmentRequestDTO;
 import com.employee_Manager.performance_system.ResponseDtoLayer.DepartmentResponseDTO;
 import com.employee_Manager.performance_system.Service.DepartmentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 @RestController
 @RequestMapping("/api/")
@@ -38,6 +41,8 @@ public class DepartmentController {
 		this.dtoMapper = dtoMapper;
 	}
 
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(summary = "Admin can Add Department" , description = "BY passing the Department Details in Body  !!")
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("department")
 	public ResponseEntity<DepartmentResponseDTO> addDepartment(@RequestBody DepartmentRequestDTO dept) {
@@ -47,7 +52,11 @@ public class DepartmentController {
 				DTOMapper.toDepartmentDto(deptService.addDepartments(dtoMapper.toDepartmentEntity(dept)))
 				, HttpStatus.CREATED);
 	}
+	
+	
 
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(summary = "Admin can Delete the Department" , description = "by Passing the Department ID !!")
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("department/{id}")
 	public ResponseEntity<DepartmentResponseDTO> deleteDepartment(@PathVariable Integer id) {
@@ -56,6 +65,9 @@ public class DepartmentController {
 		return ResponseEntity.noContent().build();
 	}
 
+	
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(summary = "Admin can Get all The Department")
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("department")
 	public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartment() {
@@ -73,6 +85,8 @@ public class DepartmentController {
 	}
 
 	
+	@Tag(name = "General APIs")
+	@Operation(summary = "Get Department by Department ID" )
 	@GetMapping("department/{id}")
 	public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Integer id) {
 		return new ResponseEntity<>(

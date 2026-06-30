@@ -20,5 +20,7 @@ public interface ApplyLeaveRepo extends JpaRepository<ApplyLeave, Integer> {
 //	Optional<List<ApplyLeave>> findByStatusAndEmployees_Empcode(LeaveStatus pending, String empcode);
 
 	Optional<List<ApplyLeave>> findByStatusAndEmployees_Departments_id(LeaveStatus pending, Integer id);
+
+	List<ApplyLeave> findByEmployees_Firstname(String employeeName);
 	
 }

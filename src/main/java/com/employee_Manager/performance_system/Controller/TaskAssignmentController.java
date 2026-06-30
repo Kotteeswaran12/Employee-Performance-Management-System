@@ -20,6 +20,9 @@ import com.employee_Manager.performance_system.Entity.TaskAssignments;
 import com.employee_Manager.performance_system.ResponseDtoLayer.TaskAssignmentsDTO;
 import com.employee_Manager.performance_system.Service.TaskAssignmentService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/")
 public class TaskAssignmentController {
@@ -31,6 +34,9 @@ public class TaskAssignmentController {
 		this.taskAssignmentService = taskAssignmentService;
 	}
 
+	
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(summary = "Manager can Assign the task to The Employee" , description = "by Passing the TaskID , Duedate , EmployeeId , ManagerID !!")
 	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("/taskAssignment/{taskid}")
 	public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
@@ -42,6 +48,9 @@ public class TaskAssignmentController {
 
 	}
 
+	
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "Employee can Process they Task Assign fo they" , description = "by Passing the Task ID !!")
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@PostMapping("/taskAssignment/start/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> processingTask(@PathVariable Integer id) {
@@ -51,6 +60,8 @@ public class TaskAssignmentController {
 	}
 
 	
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "Employee can Complete they Task Assign fo they" , description = "by Passing the Task ID !!")
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@PostMapping("/taskAssignment/complete/{id}")
 	public ResponseEntity<TaskAssignmentsDTO> completeTask(@PathVariable Integer id) {
@@ -60,6 +71,9 @@ public class TaskAssignmentController {
 	}
 
 	
+	
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "Employee can Get all the task Assign " )
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@GetMapping("taskAssignment/employee")
 	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication) {
@@ -74,7 +88,12 @@ public class TaskAssignmentController {
 
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
+	
+	
+	
 
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(summary = "Manager can Get all the task Assign BY Manager " )
 	@PreAuthorize("hasRole('MANAGER')")
 	@GetMapping("taskAssignment/manager")
 	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication) {

@@ -23,9 +23,9 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 	private EmployeeRepository empRepo;
 
 	@Override
-	public List<ApplyLeave> getAllEmployeeLeavesByEmpId(Integer id) {
+	public List<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String EmployeeName) {
 		// TODO Auto-generated method stub
-		return leaveRepo.findByemployeesId(id);
+		return leaveRepo.findByEmployees_Firstname(EmployeeName);
 	}
 
 	@Override
@@ -35,6 +35,7 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 				.orElseThrow(() -> new EmployeeNotFoundException("Employee With username : " + username + "Not Found !!"));
 		leave.setStatus(LeaveStatus.PENDING);
 		leave.setEmployees(emp);
+		leave.setAprovedBy(emp.getManager());
 
 		return leaveRepo.save(leave);
 	}
@@ -62,15 +63,15 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 	}
 
 	@Override
-	public ApplyLeave setLeaveStatus(Integer leaveId, LeaveStatus leaveStatus, Integer aprovedId) {
+	public ApplyLeave setLeaveStatus(Integer leaveId, LeaveStatus leaveStatus, String managerName) {
 		// TODO Auto-generated method stub
 
 		ApplyLeave applyLeave = leaveRepo.findById(leaveId)
 				.orElseThrow(() -> new LeaveNotFoundException("Leave Not Found for Leave ID : " + leaveId));
 
 		applyLeave.setStatus(leaveStatus);
-		Employees emp = empRepo.findById(aprovedId)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee With ID : " + aprovedId + "Not Found !!"));
+		Employees emp = empRepo.findByFirstname(managerName)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee With ID : " + managerName + "Not Found !!"));
 
 		applyLeave.setAprovedBy(emp);
 

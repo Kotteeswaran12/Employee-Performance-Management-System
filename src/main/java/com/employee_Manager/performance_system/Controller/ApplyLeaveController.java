@@ -24,6 +24,8 @@ import com.employee_Manager.performance_system.RequestDTO.ApplyLeaveRequestDTO;
 import com.employee_Manager.performance_system.ResponseDtoLayer.ApplyLeaveDTO;
 import com.employee_Manager.performance_system.Service.LeaveSerivece;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/")
@@ -32,22 +34,20 @@ public class ApplyLeaveController {
 	private final LeaveSerivece leaveSerivece;
 	private final RequestDTOMapper requestdtoMapper;
 
-	
-	
-public ApplyLeaveController(LeaveSerivece leaveSerivece, RequestDTOMapper requestdtoMapper) {
+	public ApplyLeaveController(LeaveSerivece leaveSerivece, RequestDTOMapper requestdtoMapper) {
 		super();
 		this.leaveSerivece = leaveSerivece;
 		this.requestdtoMapper = requestdtoMapper;
 	}
 
-
-//	Manager Functions
-	
-	@PreAuthorize("hasRole('MANAGER')")
+	@Tag(name = "General APIs")
+	@Operation(
+			summary = "Get all the Employee Leaves !!" , description = "all all Employee Leave by the Id"
+			)
 	@GetMapping("/leave")
-	public ResponseEntity<List<ApplyLeaveDTO>> getAllEmployeeLeavesByEmpId(@RequestParam Integer id) {
+	public ResponseEntity<List<ApplyLeaveDTO>> getAllEmployeeLeavesByEmpId(Authentication authentication) {
 
-		List<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesByEmpId(id);
+		List<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesByEmployeeName(authentication.getName());
 
 		List<ApplyLeaveDTO> dtoLeave = new ArrayList<>();
 
@@ -58,31 +58,39 @@ public ApplyLeaveController(LeaveSerivece leaveSerivece, RequestDTOMapper reques
 
 		return new ResponseEntity<>(dtoLeave, HttpStatus.OK);
 	}
-	
-	
+
+	@Tag(name = "Manager - ONLY Access")
+	@Operation(summary = "Upadte the Leave Status for Employe" , description = "By using the Employee ID")
 	@PreAuthorize("hasRole('MANAGER')")
 	@PostMapping("/leave")
 	ResponseEntity<ApplyLeaveDTO> setLeaveStatus(@RequestParam Integer id, @RequestParam LeaveStatus leaveStatus,
-			@RequestParam Integer aprovedId) {
-		return new ResponseEntity<>(DTOMapper.toApplyLeaveDto(leaveSerivece.setLeaveStatus(id, leaveStatus, aprovedId)),
+			Authentication authentication) {
+		return new ResponseEntity<>(
+				DTOMapper.toApplyLeaveDto(leaveSerivece.setLeaveStatus(id, leaveStatus, authentication.getName())),
 				HttpStatus.OK);
 	}
-	
-	
+
 //	Employee Functions
 
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "Apply For Leave" , description = "By Passing the Leave Details in Body !!")
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@PostMapping("/leave/apply")
-	ResponseEntity<ApplyLeaveDTO> applyForLeave(@RequestBody ApplyLeaveRequestDTO leave, Authentication authentication) {
-		
+	ResponseEntity<ApplyLeaveDTO> applyForLeave(@RequestBody ApplyLeaveRequestDTO leave,
+			Authentication authentication) {
+
 		String username = authentication.getName();
-		
+
 //		System.out.println(authentication.getDetails() + "\t\t");
-		
-		return new ResponseEntity<>(DTOMapper.toApplyLeaveDto(leaveSerivece.applyForLeave(requestdtoMapper.toApplyLeaveEntity(leave), username)),
+
+		return new ResponseEntity<>(
+				DTOMapper.toApplyLeaveDto(
+						leaveSerivece.applyForLeave(requestdtoMapper.toApplyLeaveEntity(leave), username)),
 				HttpStatus.CREATED);
 	}
 
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "WithDraw the  Leave" , description = "By Passing the Leave ID!!")
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@DeleteMapping("/leave/{id}")
 	ResponseEntity<String> withDrawlLeaveById(@PathVariable Integer id) {
@@ -91,11 +99,12 @@ public ApplyLeaveController(LeaveSerivece leaveSerivece, RequestDTOMapper reques
 		return new ResponseEntity<>("Sucessfully Withdrawed your Leave !!", HttpStatus.OK);
 	}
 
+	@Tag(name = "Employee - ONLY Access")
+	@Operation(summary = "Get the Leave Status for the Leave" , description = "By Passing the Leave ID  !!")
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@GetMapping("/leave/{id}")
 	ResponseEntity<LeaveStatus> getLeaveStatusById(@PathVariable Integer id) {
 		return new ResponseEntity<>(leaveSerivece.getLeaveStatusById(id), HttpStatus.OK);
 	}
 
-	
 }

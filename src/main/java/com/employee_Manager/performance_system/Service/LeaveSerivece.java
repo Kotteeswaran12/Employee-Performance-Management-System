@@ -9,7 +9,7 @@ import com.employee_Manager.performance_system.Enums.LeaveStatus;
 
 public interface LeaveSerivece {
 
-	List<ApplyLeave> getAllEmployeeLeavesByEmpId(Integer id);
+	List<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String empName);
 
 	ApplyLeave applyForLeave(ApplyLeave leave , String username);
 
@@ -17,5 +17,5 @@ public interface LeaveSerivece {
 
 	LeaveStatus getLeaveStatusById(Integer id);
 	
-	ApplyLeave setLeaveStatus(Integer id , LeaveStatus leaveStatus , Integer aprovedId);
+	ApplyLeave setLeaveStatus(Integer id , LeaveStatus leaveStatus , String managerName);
 }
