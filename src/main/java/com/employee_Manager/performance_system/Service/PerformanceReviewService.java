@@ -1,6 +1,6 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.employee_Manager.performance_system.Entity.Employees;
 import com.employee_Manager.performance_system.Entity.PerformanceReview;
@@ -21,6 +21,6 @@ public interface PerformanceReviewService {
 
 	Integer calculateFeedbackScore(Employees empId);
 	
-	List<PerformanceReview> getAllPerformanceReviewById(String username);
+	Page<PerformanceReview> getAllPerformanceReviewById(String username  , int page , int size);
 
 }

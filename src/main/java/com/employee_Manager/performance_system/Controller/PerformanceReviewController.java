@@ -1,8 +1,6 @@
 package com.employee_Manager.performance_system.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,15 +55,12 @@ public class PerformanceReviewController {
 	@Operation(summary = "can get all the Review ")
 	@GetMapping("performanceReview")
 	
-	public ResponseEntity<List<PerformanceReviewDTO>> getAllBYEmployeeId(Authentication authentication){
+	public ResponseEntity<Page<PerformanceReviewDTO>> getAllBYEmployeeId(Authentication authentication , @RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10")int size){
 		
-		List<PerformanceReview> list = performanceReviewServiceIMP.getAllPerformanceReviewById(authentication.getName()) ;
+		Page<PerformanceReview> list = performanceReviewServiceIMP.getAllPerformanceReviewById(authentication.getName() , page , size) ;
 		
-		List<PerformanceReviewDTO> dtos = new ArrayList<>();
+		Page<PerformanceReviewDTO> dtos = list.map(DTOMapper :: toPerformanceReviewDTO);
 		
-		for(PerformanceReview l : list) {
-			dtos.add(DTOMapper.toPerformanceReviewDTO(l));
-		}
 		
 		
 		return new ResponseEntity<>(

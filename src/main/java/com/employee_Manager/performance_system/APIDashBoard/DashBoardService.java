@@ -60,7 +60,7 @@ public class DashBoardService {
 
 		long department = departmentRepository.count();
 
-		List<ApplyLeave> pendingLeave = applyLeaveRepo.findByStatus(LeaveStatus.PENDING);
+		int  pendingLeave = applyLeaveRepo.countByStatus(LeaveStatus.PENDING);
 
 		adminDashBoard.setTotalDepartments((int) department);
 
@@ -69,7 +69,7 @@ public class DashBoardService {
 		adminDashBoard.setTotalEmployees(totalEmp);
 
 		adminDashBoard.setCompletedTask((int) completedTask);
-		adminDashBoard.setPendingLeaves(pendingLeave.size());
+		adminDashBoard.setPendingLeaves(pendingLeave);
 
 		return adminDashBoard;
 
@@ -95,16 +95,15 @@ public class DashBoardService {
 
 		}
 
-		List<TaskAssignments> taskAssign = assignmentRepository
-				.findByStatusAndAssignedTo_Empcode(AssignmentStatus.PENDING, getEmployeesEmpCode(empname))
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found With name :  " + empname));
+		int taskAssign = assignmentRepository
+				.countByStatusAndAssignedTo_Empcode(AssignmentStatus.PENDING, getEmployeesEmpCode(empname));
 
 		employeeDashBoard.setAttendaceScore(attendanceScore!=0 ? attendanceScore / performanceReviews.size() : 0);
 		employeeDashBoard.setFeedbackScore(feedBackScore!=0? feedBackScore / performanceReviews.size() : 0);
 		employeeDashBoard.setOverAllScore(overAllScore!=0? overAllScore / performanceReviews.size() : 0);
 		employeeDashBoard.setTaskScore(TaskScore!=0? TaskScore / performanceReviews.size() : 0);
 
-		employeeDashBoard.setPendingTask(taskAssign.size());
+		employeeDashBoard.setPendingTask(taskAssign);
 
 		return employeeDashBoard;
 
@@ -119,17 +118,16 @@ public class DashBoardService {
 		Employees manager = employeeRepository.findByEmpcode(getEmployeesEmpCode(empname))
 				.orElseThrow(() -> new EmployeeNotFoundException("No Manager Found !!"));
 
-		List<ApplyLeave> pendingLeave = applyLeaveRepo.findByStatusAndEmployees_Departments_id(LeaveStatus.PENDING , manager.getDepartments().getId())
-				.orElseThrow(() -> new EmployeeNotFoundException("No Employee Found !!"));
+		int pendingLeave = applyLeaveRepo.countByStatusAndEmployees_Departments_id(LeaveStatus.PENDING , manager.getDepartments().getId());
 
-		List<EMPFeedBack> pendingFeedbacks = feedbackRepository.findByEmployees_Departments_Dept(manager.getDepartments().getDept());
+		int pendingFeedbacks = feedbackRepository.countByEmployees_Departments_Dept(manager.getDepartments().getDept());
 
-		List<TaskAssignments> taskAssign = taskAssignmentRepository.findByAssignedTo_Departments_Dept(manager.getDepartments().getDept());
+		int taskAssign = taskAssignmentRepository.countByAssignedTo_Departments_Dept(manager.getDepartments().getDept());
 
-		managerDashBoard.setTaskAssigned(taskAssign.size());
-		managerDashBoard.setPendingReviews(pendingFeedbacks.size());
+		managerDashBoard.setTaskAssigned(taskAssign);
+		managerDashBoard.setPendingReviews(pendingFeedbacks);
 		managerDashBoard.setTeamSize(manager.getSubordinate().size());
-		managerDashBoard.setPendingLeave(pendingLeave.size());
+		managerDashBoard.setPendingLeave(pendingLeave);
 
 		return managerDashBoard;
 

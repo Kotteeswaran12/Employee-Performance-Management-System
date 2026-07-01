@@ -3,6 +3,9 @@ package com.employee_Manager.performance_system.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Employees;
@@ -52,12 +55,14 @@ public class TaskServiceIMP implements TaskService {
 	}
 
 	@Override
-	public List<Task> getAlltask(String managerName) {
+	public Page<Task> getAlltask(String managerName , int page , int size) {
 
 		Employees manager = employeeRepository.findByFirstname(managerName)
 				.orElseThrow(() -> new EmployeeNotFoundException("No Employee Found for Name : " + managerName));
 
-		return taskRepository.findByCreatedBy_id(manager.getId())
+		Pageable pageable = PageRequest.of(page, size);
+		
+		return taskRepository.findByCreatedBy_id(manager.getId() , pageable)
 				.orElseThrow(() -> new TaskException("Task not Found !!"));
 	}
 

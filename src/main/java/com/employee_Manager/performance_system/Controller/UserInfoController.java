@@ -1,5 +1,6 @@
 package com.employee_Manager.performance_system.Controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,6 +80,7 @@ public class UserInfoController {
 //
 //	}
 
+	
 	@GetMapping("user/get-userByName")
 	public ResponseEntity<UserInfoDTO> getUserByUsername(@RequestParam String username) {
 
@@ -101,5 +103,16 @@ public class UserInfoController {
 		return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.changepasword(password, authentication.getName())),
 				HttpStatus.OK);
 	}
+	
 
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("user/getall")
+	public ResponseEntity<Page<UserInfoDTO>> getAllUser(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10")int size) {
+
+		Page<UserInfo> userinfo = userInfoServiceIMP.getAllUsers(page , size) ;
+		
+		Page<UserInfoDTO> dto = userinfo.map(DTOMapper :: toUserInfoDTO);
+		
+		return new ResponseEntity<>(dto ,HttpStatus.OK);
+	}
 }

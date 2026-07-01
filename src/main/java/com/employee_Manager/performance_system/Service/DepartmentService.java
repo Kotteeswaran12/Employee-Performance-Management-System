@@ -1,11 +1,9 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Departments;
@@ -28,9 +26,12 @@ public class DepartmentService implements DepartmentServiceInterface {
 	}
 
 	@Override
-	public List<Departments> getAllDepartments() {
+	public Page<Departments> getAllDepartments(int page , int size) {
 		// TODO Auto-generated method stub
-		return DeptRepo.findAll();
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		return DeptRepo.findAll(pageable);
 	}
 
 	@Override

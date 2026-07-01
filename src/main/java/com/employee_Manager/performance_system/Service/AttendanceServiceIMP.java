@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Attendance;
@@ -49,13 +52,14 @@ public class AttendanceServiceIMP implements AttendanceService {
 
 		return attendanceRepository.save(attendance);
 	}
+	
+	
 
 	@Override
 	public Attendance checkOutAndCalculateWorkingHours(String username) {
-		Employees emp = employeeRepository.findByFirstname(username)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
+		
 
-		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(emp.getId(), LocalDate.now())
+		Attendance attendance = attendanceRepository.findByEmployeesIdAndAttendanceDate(getEmpId(username), LocalDate.now())
 				.orElseThrow(() -> new AttendanceException("Try To Check in First and try Check out !!"));
 
 		if (attendance.getCheckOut() != null) {
@@ -72,12 +76,14 @@ public class AttendanceServiceIMP implements AttendanceService {
 	}
 
 	@Override
-	public List<Attendance> getAllAttendaceByEmployeeId(String username) {
+	public Page<Attendance> getAllAttendaceByEmployeeId(String username ,int page   , int size) {
+//
+//		Employees emp = employeeRepository.findByFirstname(username)
+//				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
 
-		Employees emp = employeeRepository.findByFirstname(username)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
-
-		List<Attendance> attendances = attendanceRepository.findByEmployeesId(emp.getId());
+		Pageable pageable = PageRequest.of(page, size);
+		
+		Page<Attendance> attendances = attendanceRepository.findByEmployeesId(getEmpId(username) , pageable);
 
 		if (attendances == null) {
 			throw new AttendanceException("No Attendace Found !!");
@@ -85,4 +91,23 @@ public class AttendanceServiceIMP implements AttendanceService {
 		return attendances;
 	}
 
+	
+	@Override
+	public Page<Attendance> filterAttendanceByEndingAndStaringDates(String empName,  LocalDate startingDate, LocalDate endingDate , int page   , int size) {
+		// TODO Auto-generated method stub
+		Pageable pageable = PageRequest.of(page , size );
+		
+		
+		return attendanceRepository.findByEmployees_IdAndAttendanceDateBetween(getEmpId(empName) , startingDate , endingDate , pageable);
+	}
+
+	
+	
+	public int getEmpId(String username) {
+		Employees emp = employeeRepository.findByFirstname(username)
+				.orElseThrow(() -> new EmployeeNotFoundException("Employee not Found for ID :" + username));
+		
+		return emp.getId();
+	}
+	
 }

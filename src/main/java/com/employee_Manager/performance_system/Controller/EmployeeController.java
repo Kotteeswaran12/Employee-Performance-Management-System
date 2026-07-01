@@ -3,6 +3,7 @@ package com.employee_Manager.performance_system.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
@@ -47,9 +49,9 @@ public class EmployeeController {
 			)
 	@PreAuthorize("hasRole('MANAGER')")
 	@GetMapping("employee")
-	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication) {
+	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication ,@RequestParam(defaultValue = "0") int page ,@RequestParam(defaultValue = "10") int size) {
 
-		List<Employees> employees = employeeService.getAllEmployees(authentication.getName());
+		Page<Employees> employees = employeeService.getAllSubordinatesByManagerName(authentication.getName() , page , size);
 
 		List<EmployeeResponseDTO> dtos = new ArrayList<>();
 
@@ -78,7 +80,7 @@ public class EmployeeController {
 
 //		emp.setEmpcode("EMP);
 
-		Employees e = employeeService.addEmployees(requestDTOMapper.toEmployeeEntity(emp), deptId);
+		Employees e = employeeService.addManagerToDepartment(requestDTOMapper.toEmployeeEntity(emp), deptId);
 
 		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
 	}
@@ -102,6 +104,29 @@ public class EmployeeController {
 	}
 	
 	
+	
+	
+	@Tag(name = "ADMIN - ONLY Access")
+	@Operation(
+			summary = "Get all Employees"
+			)
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("employees/getall")
+	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(@RequestParam (defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
+
+
+		Page<Employees> employees = employeeService.getAllEmployees(page, size);
+
+		List<EmployeeResponseDTO> dtos = new ArrayList<>();
+
+		for (Employees e : employees) {
+
+			dtos.add(DTOMapper.toEmployeeDto(e));
+
+		}
+
+		return new ResponseEntity<>(dtos , HttpStatus.OK);
+	}
 	
 	
 	

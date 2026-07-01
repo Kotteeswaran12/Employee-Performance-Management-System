@@ -1,6 +1,6 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.employee_Manager.performance_system.Entity.Task;
 
@@ -10,7 +10,7 @@ public interface TaskService {
 	
 	public Task updateTask(Task task);
 	
-	public List<Task> getAlltask(String managerName);
+	public Page<Task> getAlltask(String managerName , int page , int size);
 	
 	public Task getTaskById(Integer id);
 	

@@ -1,8 +1,11 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Employees;
@@ -107,22 +110,25 @@ public class TaskAssignmentServiceIMP implements TaskAssignmentService {
 	}
 
 	@Override
-	public List<TaskAssignments> getTaskAssignToEmployee(String  empName) {
+	public Page<TaskAssignments> getAllTaskAssignToEmployee(String  empName , int page , int size) {
 		// TODO Auto-generated method stub
 		
 		Employees emp = employeeRepository.findByFirstname(empName)
 				.orElseThrow(()-> new EmployeeNotFoundException("Employee not Found for name : "+ empName));
 		
-		return taskAssignmentRepository.findByAssignedTo_Id(emp.getId());
+		Pageable pageable = PageRequest.of(page, size);
+		
+		return taskAssignmentRepository.findByAssignedTo_Id(emp.getId() , pageable);
 		
 	}
 
 	@Override
-	public List<TaskAssignments> getTaskAssignToManager(String managerName) {
+	public Page<TaskAssignments> getAllTaskAssignByManager(String managerName , int page , int size) {
 		Employees emp = employeeRepository.findByFirstname(managerName)
 				.orElseThrow(()-> new EmployeeNotFoundException("Manager not Found for name : "+ managerName));
 		
-		return taskAssignmentRepository.findByAssignedTo_Id(emp.getId());
+		Pageable pageable = PageRequest.of(page, size);
+		return taskAssignmentRepository.findByAssignedBy_Id(emp.getId(), pageable) ;
 	}
 
 }

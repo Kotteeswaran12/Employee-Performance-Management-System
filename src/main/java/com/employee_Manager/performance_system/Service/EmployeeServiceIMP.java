@@ -1,15 +1,14 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Departments;
 import com.employee_Manager.performance_system.Entity.Employees;
-import com.employee_Manager.performance_system.Entity.UserInfo;
 import com.employee_Manager.performance_system.Enums.RoleTypes;
 import com.employee_Manager.performance_system.Exceptions.DepartmentNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
@@ -35,16 +34,18 @@ public class EmployeeServiceIMP implements EmployeeService {
 	}
 
 	@Override
-	public List<Employees> getAllEmployees(String username) {
+	public Page<Employees> getAllSubordinatesByManagerName(String username , int page , int size) {
 		// TODO Auto-generated method stub
 		Employees empManager = empRepo.findByFirstname(username)
 				.orElseThrow(() -> new UserNotFoundException("The Manager Not Found with name :" + username));
 
-		return empManager.getSubordinate();
+		Pageable pageable = PageRequest.of(page, size , Sort.by("empcode").ascending());
+		
+		return empRepo.findByManager(empManager , pageable);
 	}
 
 	@Override
-	public Employees addEmployees(Employees emp, Integer deptId) {
+	public Employees addManagerToDepartment(Employees emp, Integer deptId) {
 		// TODO Auto-generated method stub
 
 		Departments depts = deptRepo.findById(deptId)
@@ -53,7 +54,8 @@ public class EmployeeServiceIMP implements EmployeeService {
 		emp.setDepartments(depts);
 
 		emp.setJoindate(LocalDate.now());
-
+		
+		
 		return empRepo.save(emp);
 
 	}
@@ -106,5 +108,14 @@ public class EmployeeServiceIMP implements EmployeeService {
 		return empRepo.findByFirstname(name)
 				.orElseThrow(() -> new EmployeeNotFoundException("No Employee Found for name : "+ name));
 	}
+
+	@Override
+	public Page<Employees> getAllEmployees(int page, int size) {
+		// TODO Auto-generated method stub
+		Pageable pageable = PageRequest.of(page, size , Sort.by("firstname").ascending());
+		return empRepo.findAll(pageable);
+	}
+	
+	
 
 }

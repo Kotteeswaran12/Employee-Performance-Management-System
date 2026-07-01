@@ -3,6 +3,9 @@ package com.employee_Manager.performance_system.Service;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -112,6 +115,15 @@ public class UserInfoServiceIMP implements UserInfoService {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		
 		return userInfoRepository.save(user);
+	}
+
+	@Override
+	public Page<UserInfo> getAllUsers(int page, int size) {
+		// TODO Auto-generated method stub
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		return userInfoRepository.findAll(pageable);
 	}
 
 }

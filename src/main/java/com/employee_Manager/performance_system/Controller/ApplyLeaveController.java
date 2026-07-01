@@ -1,8 +1,6 @@
 package com.employee_Manager.performance_system.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,19 +43,15 @@ public class ApplyLeaveController {
 			summary = "Get all the Employee Leaves !!" , description = "all all Employee Leave by the Id"
 			)
 	@GetMapping("/leave")
-	public ResponseEntity<List<ApplyLeaveDTO>> getAllEmployeeLeavesByEmpId(Authentication authentication) {
+	public ResponseEntity<Page<ApplyLeaveDTO>> getAllEmployeeLeavesByEmpId(Authentication authentication , @RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10")int size) {
 
-		List<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesByEmployeeName(authentication.getName());
+		Page<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesByEmployeeName(authentication.getName() , page ,size);
 
-		List<ApplyLeaveDTO> dtoLeave = new ArrayList<>();
-
-		for (ApplyLeave a : leaves) {
-
-			dtoLeave.add(DTOMapper.toApplyLeaveDto(a));
-		}
+		Page<ApplyLeaveDTO> dtoLeave = leaves.map(DTOMapper :: toApplyLeaveDto);
 
 		return new ResponseEntity<>(dtoLeave, HttpStatus.OK);
 	}
+	
 
 	@Tag(name = "Manager - ONLY Access")
 	@Operation(summary = "Upadte the Leave Status for Employe" , description = "By using the Employee ID")

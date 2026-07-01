@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,15 +77,15 @@ public class TaskAssignmentController {
 	@Operation(summary = "Employee can Get all the task Assign " )
 	@PreAuthorize("hasRole('EMPLOYEE')")
 	@GetMapping("taskAssignment/employee")
-	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication) {
+	public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication ,
+			@RequestParam(defaultValue = "0") int page ,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToEmployee(authentication.getName());
+		Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignToEmployee(authentication.getName() , page , size);
 
-		List<TaskAssignmentsDTO> dto = new ArrayList<>();
+		Page<TaskAssignmentsDTO> dto = task.map(DTOMapper :: toTaskAssignmentsDTO);
 
-		for (TaskAssignments t : task) {
-			dto.add(DTOMapper.toTaskAssignmentsDTO(t));
-		}
+		
 
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
@@ -96,15 +97,16 @@ public class TaskAssignmentController {
 	@Operation(summary = "Manager can Get all the task Assign BY Manager " )
 	@PreAuthorize("hasRole('MANAGER')")
 	@GetMapping("taskAssignment/manager")
-	public ResponseEntity<List<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication) {
+	public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication ,
+			@RequestParam(defaultValue = "0") int page ,
+			@RequestParam(defaultValue = "10") int size
+			) {
 
-		List<TaskAssignments> task = taskAssignmentService.getTaskAssignToManager(authentication.getName());
+		Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignByManager(authentication.getName() , page , size);
 
-		List<TaskAssignmentsDTO> dto = new ArrayList<>();
+		Page<TaskAssignmentsDTO> dto = task.map(DTOMapper :: toTaskAssignmentsDTO);
 
-		for (TaskAssignments t : task) {
-			dto.add(DTOMapper.toTaskAssignmentsDTO(t));
-		}
+		
 
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}

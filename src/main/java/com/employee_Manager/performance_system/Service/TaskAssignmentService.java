@@ -1,7 +1,9 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
+
+import org.springframework.data.domain.Page;
 
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
 
@@ -17,9 +19,9 @@ public interface TaskAssignmentService {
 	
 	public TaskAssignments completedTask(Integer id);
 	
-	public List<TaskAssignments> getTaskAssignToEmployee(String  empName);
+	public Page<TaskAssignments> getAllTaskAssignToEmployee(String  empName , int page ,int size);
 	
-	public List<TaskAssignments> getTaskAssignToManager(String managerName);
+	public Page<TaskAssignments> getAllTaskAssignByManager(String managerName , int page ,int size);
 	
 	
 

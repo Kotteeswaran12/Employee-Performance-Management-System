@@ -10,4 +10,6 @@ public interface FeedbackRepository  extends JpaRepository<EMPFeedBack, Integer>
 
 	List<EMPFeedBack> findByEmployees_Departments_Dept(String dept);
 
+	int countByEmployees_Departments_Dept(String dept);
+
 }

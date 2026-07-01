@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Attendance;
@@ -139,11 +142,11 @@ public class PerformanceReviewServiceIMP implements PerformanceReviewService {
 	}
 
 	@Override
-	public List<PerformanceReview> getAllPerformanceReviewById(String username) {
+	public Page<PerformanceReview> getAllPerformanceReviewById(String username , int page , int size) {
 		// TODO Auto-generated method stub
 		
-		
-		return performanceReviewRepository.findByEmployees_firstname(username);
+		Pageable pageable = PageRequest.of(page, size);
+		return performanceReviewRepository.findByEmployees_firstname(username , pageable);
 	}
 
 }

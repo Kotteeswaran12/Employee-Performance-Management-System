@@ -4,6 +4,9 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.employee_Manager.performance_system.Entity.EMPFeedBack;
 import com.employee_Manager.performance_system.Entity.Employees;
@@ -49,8 +52,14 @@ public class FeedbackServiceIMP implements FeedbackService {
 	public List<EMPFeedBack> getAllFeedbackByEmpId(String userName) {
 		Employees employees = employeeRepository.findByFirstname(userName)
 				.orElseThrow(() -> new EmployeeNotFoundException("Manager OR UserNot Found !!"));
-		
-		
+
 		return employees.getFeedBacks();
+	}
+
+	@Override
+	public Page<EMPFeedBack> getAllFeedback(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size);
+		return feedbackpository.findAll(pageable);
 	}
 }

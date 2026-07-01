@@ -1,15 +1,12 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-
+import org.springframework.data.domain.Page;
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
 import com.employee_Manager.performance_system.Enums.LeaveStatus;
 
 public interface LeaveSerivece {
 
-	List<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String empName);
+	Page<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String EmployeeName , int page , int size);
 
 	ApplyLeave applyForLeave(ApplyLeave leave , String username);
 

@@ -1,8 +1,10 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
@@ -23,9 +25,12 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 	private EmployeeRepository empRepo;
 
 	@Override
-	public List<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String EmployeeName) {
+	public Page<ApplyLeave> getAllEmployeeLeavesByEmployeeName(String EmployeeName , int page , int size) {
 		// TODO Auto-generated method stub
-		return leaveRepo.findByEmployees_Firstname(EmployeeName);
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		return leaveRepo.findByEmployees_Firstname(EmployeeName , pageable);
 	}
 
 	@Override

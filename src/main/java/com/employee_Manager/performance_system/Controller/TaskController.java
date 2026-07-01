@@ -1,8 +1,6 @@
 package com.employee_Manager.performance_system.Controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
@@ -70,14 +69,14 @@ public class TaskController {
 	@Operation(summary = "Manager Can all the task" )
 	@PreAuthorize("hasRole('MANAGER')")
 	@GetMapping("/task")
-	public ResponseEntity<List<TaskDTO>> getAllTask(Authentication authentication) {
+	public ResponseEntity<Page<TaskDTO>> getAllTask(Authentication authentication ,
+			@RequestParam(defaultValue = "0") int page ,
+			@RequestParam(defaultValue = "10") int size) {
 		
-		List<Task> task = taskService.getAlltask(authentication.getName());
+		Page<Task> task = taskService.getAlltask(authentication.getName() , page , size);
 		
-		List<TaskDTO> taskDto = new ArrayList<>();
-		for(Task t : task) {
-			taskDto.add(DTOMapper.toTaskDTo(t));
-		}
+		Page<TaskDTO> taskDto = task.map(DTOMapper :: toTaskDTo);
+		
 		
 		return new ResponseEntity<>(taskDto, HttpStatus.CREATED);
 	}
