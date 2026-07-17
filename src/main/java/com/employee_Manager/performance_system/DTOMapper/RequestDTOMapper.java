@@ -2,7 +2,6 @@ package com.employee_Manager.performance_system.DTOMapper;
 
 import org.springframework.stereotype.Component;
 
-
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
 import com.employee_Manager.performance_system.Entity.Departments;
 import com.employee_Manager.performance_system.Entity.EMPFeedBack;
@@ -15,7 +14,7 @@ import com.employee_Manager.performance_system.RequestDTO.EMPFeedBackRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.EmployeeRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.TaskRequestDTO;
 import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
-import com.employee_Manager.performance_system.ResponseDtoLayer.UserInfoDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.LoginResponseDTO;
 
 @Component
 public class RequestDTOMapper {
@@ -90,7 +89,8 @@ public class RequestDTOMapper {
 	public UserInfo toUserInfoEntity(UserInfoRequestDTO user) {
 
 		UserInfo userInfo = new UserInfo();
-
+		
+		userInfo.setUsername(user.getUsername());
 		userInfo.setEmail(user.getEmail());
 
 		userInfo.setPassword(user.getPassword());
@@ -99,15 +99,28 @@ public class RequestDTOMapper {
 
 	}
 
-	public UserInfo toUserInfoEntity(UserInfoDTO user) {
-		// TODO Auto-generated method stub
-		UserInfo userInfo = new UserInfo();
+	// public UserInfo toUserInfoEntity(UserInfoDTO user) {
+	// 	// TODO Auto-generated method stub
+	// 	UserInfo userInfo = new UserInfo();
+		
+	// 	userInfo.setUsername(user.getUsername());
 
-		userInfo.setUsername(user.getUsername());
+	// 	userInfo.setPassword(user.getPassword());
 
-		userInfo.setPassword(user.getPassword());
+	// 	return userInfo;
+	// }
 
-		return userInfo;
+
+	public  LoginResponseDTO toLoginResponseDto(String token , UserInfo user){
+
+		LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+
+		loginResponseDTO.setToken(token);
+		loginResponseDTO.setRole(user.getRole().toString());
+		loginResponseDTO.setUsername(user.getUsername());
+
+		return loginResponseDTO;
+
 	}
 
 }

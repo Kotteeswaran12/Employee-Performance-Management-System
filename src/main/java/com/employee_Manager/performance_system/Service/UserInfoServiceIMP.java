@@ -1,24 +1,22 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password4j.BcryptPassword4jPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Employees;
 import com.employee_Manager.performance_system.Entity.UserInfo;
 import com.employee_Manager.performance_system.Enums.RoleTypes;
-import com.employee_Manager.performance_system.Exceptions.AdminAlreadyExists;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
 import com.employee_Manager.performance_system.Exceptions.UserNotFoundException;
 import com.employee_Manager.performance_system.Repository.EmployeeRepository;
 import com.employee_Manager.performance_system.Repository.UserInfoRepository;
-
-import net.bytebuddy.implementation.bytecode.Throw;
+import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
 
 @Service
 public class UserInfoServiceIMP implements UserInfoService {
@@ -60,6 +58,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 	this.userInfoRepository = userInfoRepository;
 	this.employeeRepository = employeeRepository;
 	this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+	
 }
 
 	@Override
@@ -91,7 +90,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 		// TODO Auto-generated method stub
 		UserInfo user = getUserByUsername(username);
 
-		user.setPassword(password);
+		user.setPassword(bCryptPasswordEncoder.encode(password));
 
 		return userInfoRepository.save(user);
 	}
@@ -108,6 +107,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 //			throw new AdminAlreadyExists("The Admin alredy Exsist with name :"+ user.getUsername() + " And He is Already Admin also");
 //			
 //		}
+
 //		
 		user.setRole(RoleTypes.ADMIN);
 		user.setCreatedate(LocalDate.now());
@@ -125,5 +125,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 		
 		return userInfoRepository.findAll(pageable);
 	}
+
+	
 
 }

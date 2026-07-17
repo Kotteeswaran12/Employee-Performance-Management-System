@@ -1,40 +1,40 @@
 package com.employee_Manager.performance_system.RequestDTO;
 
-import java.time.LocalDate;
-
-import com.employee_Manager.performance_system.Enums.RoleTypes;
-
 public class UserInfoRequestDTO {
 
+    
+    private String username;
+    private String email;
+    private String password;
 
+    public String getEmail() {
+        return email;
+    }
 
-	private String email;
-	private String password;
-	
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	
+    public String getPassword() {
+        return password;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	@Override
-	public String toString() {
-		return "UserInfoDTO [ email=" + email + ", password=" + password
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        return "UserInfoDTO [ email=" + email + ", password=" + password
+                + "]";
+    }
 
 }

@@ -18,6 +18,7 @@ import com.employee_Manager.performance_system.DTOMapper.DTOMapper;
 import com.employee_Manager.performance_system.DTOMapper.RequestDTOMapper;
 import com.employee_Manager.performance_system.Entity.UserInfo;
 import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
+import com.employee_Manager.performance_system.ResponseDtoLayer.LoginResponseDTO;
 import com.employee_Manager.performance_system.ResponseDtoLayer.UserInfoDTO;
 import com.employee_Manager.performance_system.Service.AuthService;
 import com.employee_Manager.performance_system.Service.UserInfoService;
@@ -47,9 +48,9 @@ public class UserInfoController {
 	
 	
 	@PostMapping("user/log-in")
-	public ResponseEntity<String> getAuthenticate(@RequestBody UserInfoDTO user) {
-		UserInfo users = requestDTOMapper.toUserInfoEntity(user);
-		return new ResponseEntity<>(authService.getAuthentication(users) , HttpStatus.OK);
+	public ResponseEntity<LoginResponseDTO> getAuthenticate(@RequestBody UserInfoRequestDTO user) {
+		
+		return new ResponseEntity<>(authService.getAuthentication(user) , HttpStatus.OK);
 	}
 	
 	
