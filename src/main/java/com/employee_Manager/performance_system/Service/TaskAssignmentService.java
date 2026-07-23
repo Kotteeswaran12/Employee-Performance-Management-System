@@ -22,6 +22,9 @@ public interface TaskAssignmentService {
 	public Page<TaskAssignments> getAllTaskAssignToEmployee(String  empName , int page ,int size);
 	
 	public Page<TaskAssignments> getAllTaskAssignByManager(String managerName , int page ,int size);
+
+
+    public Page<TaskAssignments> getAllTaskAssignments(int page, int size);
 	
 	
 

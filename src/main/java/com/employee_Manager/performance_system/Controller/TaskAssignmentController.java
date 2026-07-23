@@ -1,8 +1,6 @@
 package com.employee_Manager.performance_system.Controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -28,86 +26,89 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/")
 public class TaskAssignmentController {
 
-	private final TaskAssignmentService taskAssignmentService;
+    private final TaskAssignmentService taskAssignmentService;
 
-	public TaskAssignmentController(TaskAssignmentService taskAssignmentService) {
-		super();
-		this.taskAssignmentService = taskAssignmentService;
-	}
+    public TaskAssignmentController(TaskAssignmentService taskAssignmentService) {
+        super();
+        this.taskAssignmentService = taskAssignmentService;
+    }
 
-	
-	@Tag(name = "Manager - ONLY Access")
-	@Operation(summary = "Manager can Assign the task to The Employee" , description = "by Passing the TaskID , Duedate , EmployeeId , ManagerID !!")
-	@PreAuthorize("hasRole('MANAGER')")
-	@PostMapping("/taskAssignment/{taskid}")
-	public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
-			@RequestParam Integer employeeId, @RequestParam Integer managerid) {
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(summary = "Manager can Assign the task to The Employee", description = "by Passing the TaskID , Duedate , EmployeeId , ManagerID !!")
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/taskAssignment/{taskid}")
+    public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
+            @RequestParam Integer employeeId, @RequestParam Integer managerid) {
 
-		return new ResponseEntity<>(
-				DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.assignTask(taskid, dueDate, employeeId, managerid))
-				, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.assignTask(taskid, dueDate, employeeId, managerid)),
+                HttpStatus.CREATED);
 
-	}
+    }
 
-	
-	@Tag(name = "Employee - ONLY Access")
-	@Operation(summary = "Employee can Process they Task Assign fo they" , description = "by Passing the Task ID !!")
-	@PreAuthorize("hasRole('EMPLOYEE')")
-	@PostMapping("/taskAssignment/start/{id}")
-	public ResponseEntity<TaskAssignmentsDTO> processingTask(@PathVariable Integer id) {
+    @Tag(name = "Employee - ONLY Access")
+    @Operation(summary = "Employee can Process they Task Assign fo they", description = "by Passing the Task ID !!")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/taskAssignment/start/{id}")
+    public ResponseEntity<TaskAssignmentsDTO> processingTask(@PathVariable Integer id) {
 
-		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.processingTask(id)),
-				HttpStatus.OK);
-	}
+        return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.processingTask(id)),
+                HttpStatus.OK);
+    }
 
-	
-	@Tag(name = "Employee - ONLY Access")
-	@Operation(summary = "Employee can Complete they Task Assign fo they" , description = "by Passing the Task ID !!")
-	@PreAuthorize("hasRole('EMPLOYEE')")
-	@PostMapping("/taskAssignment/complete/{id}")
-	public ResponseEntity<TaskAssignmentsDTO> completeTask(@PathVariable Integer id) {
+    @Tag(name = "Employee - ONLY Access")
+    @Operation(summary = "Employee can Complete they Task Assign fo they", description = "by Passing the Task ID !!")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/taskAssignment/complete/{id}")
+    public ResponseEntity<TaskAssignmentsDTO> completeTask(@PathVariable Integer id) {
 
-		return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.completedTask(id)),
-				HttpStatus.OK);
-	}
+        return new ResponseEntity<>(DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.completedTask(id)),
+                HttpStatus.OK);
+    }
 
-	
-	
-	@Tag(name = "Employee - ONLY Access")
-	@Operation(summary = "Employee can Get all the task Assign " )
-	@PreAuthorize("hasRole('EMPLOYEE')")
-	@GetMapping("taskAssignment/employee")
-	public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication ,
-			@RequestParam(defaultValue = "0") int page ,
-			@RequestParam(defaultValue = "10") int size) {
+    @Tag(name = "Employee - ONLY Access")
+    @Operation(summary = "Employee can Get all the task Assign ")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("taskAssignment/employee")
+    public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToEmployee(Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-		Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignToEmployee(authentication.getName() , page , size);
+        Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignToEmployee(authentication.getName(), page, size);
 
-		Page<TaskAssignmentsDTO> dto = task.map(DTOMapper :: toTaskAssignmentsDTO);
+        Page<TaskAssignmentsDTO> dto = task.map(DTOMapper::toTaskAssignmentsDTO);
 
-		
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+    
+    @Tag(name= "Admin - ONLY Access")
+    @Operation(summary= "Admin can get all the Task assign to the Employees")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/Tasks")
+    public ResponseEntity<Page<TaskAssignmentsDTO>> getAllTaskAssignment(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-		return new ResponseEntity<>(dto, HttpStatus.OK);
-	}
-	
-	
-	
+        Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignments( page, size);
 
-	@Tag(name = "Manager - ONLY Access")
-	@Operation(summary = "Manager can Get all the task Assign BY Manager " )
-	@PreAuthorize("hasRole('MANAGER')")
-	@GetMapping("taskAssignment/manager")
-	public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication ,
-			@RequestParam(defaultValue = "0") int page ,
-			@RequestParam(defaultValue = "10") int size
-			) {
+        Page<TaskAssignmentsDTO> dto = task.map(DTOMapper::toTaskAssignmentsDTO);
 
-		Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignByManager(authentication.getName() , page , size);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
 
-		Page<TaskAssignmentsDTO> dto = task.map(DTOMapper :: toTaskAssignmentsDTO);
+    }
 
-		
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(summary = "Manager can Get all the task Assign BY Manager ")
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("taskAssignment/manager")
+    public ResponseEntity<Page<TaskAssignmentsDTO>> getTaskAssignToManager(Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
 
-		return new ResponseEntity<>(dto, HttpStatus.OK);
-	}
+        Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignByManager(authentication.getName(), page, size);
+
+        Page<TaskAssignmentsDTO> dto = task.map(DTOMapper::toTaskAssignmentsDTO);
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }

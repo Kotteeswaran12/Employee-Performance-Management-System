@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.employee_Manager.performance_system.Service.CustomeUserDetailService;
 import com.employee_Manager.performance_system.Service.JWTService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,70 +21,69 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-	private final JWTService jwtService;
+    private final JWTService jwtService;
 
-	private final CustomeUserDetailService serviceIMP;
+    private final CustomeUserDetailService serviceIMP;
 
-	public JWTFilter(JWTService jwtService, CustomeUserDetailService serviceIMP) {
-		super();
-		this.jwtService = jwtService;
-		this.serviceIMP = serviceIMP;
-	}
+    public JWTFilter(JWTService jwtService, CustomeUserDetailService serviceIMP) {
+        super();
+        this.jwtService = jwtService;
+        this.serviceIMP = serviceIMP;
+    }
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-		System.out.println("IM Filletr JWT");
-		String authHeader = request.getHeader("Authorization");
+        System.out.println("IM Filletr JWT");
+        String authHeader = request.getHeader("Authorization");
 
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			filterChain.doFilter(request, response);
-			return;
-		}
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-		String jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7);
 
-		try {
-			System.out.println("JWT : "+ jwt);
-	
+        System.out.println("Header = [" + authHeader + "]");
 
-			String username = jwtService.getusername(jwt);
-			System.out.println("Username :" +  username);
-			
-			
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			System.out.println("Auth Before : "+ authHeader);
-			
-			
-			if (username != null && authentication == null) {
+        try {
+            System.out.println("JWT : " + jwt);
 
-				UserDetails user = serviceIMP.loadUserByUsername(username);
-				System.out.println("User load : " + user);
+            String username = jwtService.getusername(jwt);
+            System.out.println("Username :" + username);
 
-				if (jwtService.isTokenValid(jwt, user)) {
-					
-					System.out.println("Token Valid");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("Auth Before : " + authentication);
 
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null,
-							user.getAuthorities());
+            if (username != null && authentication == null) {
 
-					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                UserDetails user = serviceIMP.loadUserByUsername(username);
+                System.out.println("User load : " + user);
 
-					SecurityContextHolder.getContext().setAuthentication(authToken);
-					
-					System.out.println("AuthToken : "+ authToken.getAuthorities());
-					
-					System.out.println("Sucessfully Valid JWT");
-				}
-			}
+                if (jwtService.isTokenValid(jwt, user)) {
 
-		} catch (Exception e) {
-			// Log if needed
-			e.printStackTrace();
-		}
+                    System.out.println("Token Valid");
 
-		filterChain.doFilter(request, response);
-	}
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user, null,
+                            user.getAuthorities());
+
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                    System.out.println("AuthToken : " + authToken.getAuthorities());
+
+                    System.out.println("Sucessfully Valid JWT");
+                }
+            }
+
+        } catch (Exception e) {
+            // Log if needed
+            e.printStackTrace();
+        }
+
+        filterChain.doFilter(request, response);
+    }
 
 }

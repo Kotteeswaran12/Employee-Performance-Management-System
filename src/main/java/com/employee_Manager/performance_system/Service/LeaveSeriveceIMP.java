@@ -85,4 +85,11 @@ public class LeaveSeriveceIMP implements LeaveSerivece {
 		return applyLeave;
 	}
 
+	@Override
+	public Page<ApplyLeave> getAllEmployeeLeavesRequest(int page, int size) {
+		// TODO Auto-generated method stub
+		Pageable pageable = PageRequest.of(page, size);
+		return leaveRepo.findAll(pageable);
+	}
+
 }

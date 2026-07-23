@@ -1,6 +1,7 @@
 package com.employee_Manager.performance_system.Service;
 
 import org.springframework.data.domain.Page;
+
 import com.employee_Manager.performance_system.Entity.ApplyLeave;
 import com.employee_Manager.performance_system.Enums.LeaveStatus;
 
@@ -15,4 +16,6 @@ public interface LeaveSerivece {
 	LeaveStatus getLeaveStatusById(Integer id);
 	
 	ApplyLeave setLeaveStatus(Integer id , LeaveStatus leaveStatus , String managerName);
+
+    Page<ApplyLeave> getAllEmployeeLeavesRequest(int page, int size);
 }

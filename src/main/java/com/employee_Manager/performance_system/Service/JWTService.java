@@ -71,7 +71,7 @@ public class JWTService {
 		// TODO Auto-generated method stub
 		
 		 final String username = getusername(jwt);
-		return username.equals(username) && !isTokenExpried(jwt);
+		return username.equals(user.getUsername()) && !isTokenExpried(jwt);
 	}
 
 	private boolean isTokenExpried(String jwt) {
