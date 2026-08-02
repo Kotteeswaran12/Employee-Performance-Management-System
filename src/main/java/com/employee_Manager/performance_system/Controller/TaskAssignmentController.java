@@ -38,10 +38,11 @@ public class TaskAssignmentController {
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping("/taskAssignment/{taskid}")
     public ResponseEntity<TaskAssignmentsDTO> assignTask(@PathVariable Integer taskid, @RequestParam LocalDate dueDate,
-            @RequestParam Integer employeeId, @RequestParam Integer managerid) {
+            @RequestParam String employeeCode, Authentication authentication) {
 
+        System.out.println(authentication.getName());
         return new ResponseEntity<>(
-                DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.assignTask(taskid, dueDate, employeeId, managerid)),
+                DTOMapper.toTaskAssignmentsDTO(taskAssignmentService.assignTask(taskid, dueDate, employeeCode, authentication.getName())),
                 HttpStatus.CREATED);
 
     }
@@ -80,15 +81,15 @@ public class TaskAssignmentController {
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-    
-    @Tag(name= "Admin - ONLY Access")
-    @Operation(summary= "Admin can get all the Task assign to the Employees")
+
+    @Tag(name = "Admin - ONLY Access")
+    @Operation(summary = "Admin can get all the Task assign to the Employees")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/Tasks")
     public ResponseEntity<Page<TaskAssignmentsDTO>> getAllTaskAssignment(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignments( page, size);
+        Page<TaskAssignments> task = taskAssignmentService.getAllTaskAssignments(page, size);
 
         Page<TaskAssignmentsDTO> dto = task.map(DTOMapper::toTaskAssignmentsDTO);
 
@@ -110,5 +111,14 @@ public class TaskAssignmentController {
         Page<TaskAssignmentsDTO> dto = task.map(DTOMapper::toTaskAssignmentsDTO);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(summary = "Manager can Count all the task Assign BY Manager ")
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("/CountAllTaskByStatus")
+    public ResponseEntity<Object[]> CountAllByStatus(Authentication authentication) {
+
+        return new ResponseEntity<>(taskAssignmentService.CountAllByStatus(authentication.getName()), HttpStatus.OK);
     }
 }

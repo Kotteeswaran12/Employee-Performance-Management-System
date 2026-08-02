@@ -2,7 +2,6 @@ package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
 
-
 import org.springframework.data.domain.Page;
 
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
@@ -11,8 +10,8 @@ public interface TaskAssignmentService {
 	
 	public TaskAssignments assignTask(Integer taskid ,
 												LocalDate dueDate ,
-												Integer employeeId , 
-												Integer managerid);
+												String employeeCode, 
+												String managerName);
 	
 	
 	public TaskAssignments processingTask(Integer id);
@@ -25,6 +24,8 @@ public interface TaskAssignmentService {
 
 
     public Page<TaskAssignments> getAllTaskAssignments(int page, int size);
+
+	public Object[] CountAllByStatus(String Managername);
 	
 	
 

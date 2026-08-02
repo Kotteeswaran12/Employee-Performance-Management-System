@@ -6,34 +6,36 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.data.jpa.repository.Query;
 
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
 import com.employee_Manager.performance_system.Enums.AssignmentStatus;
 
 public interface TaskAssignmentRepository extends JpaRepository<TaskAssignments, Integer> {
 
-	Page<TaskAssignments> findByAssignedTo_Id(Integer id , Pageable pageable);
-	
-	Page<TaskAssignments> findByAssignedBy_Id(Integer id , Pageable pageable);
+    Page<TaskAssignments> findByAssignedTo_Id(Integer id, Pageable pageable);
 
-	List<TaskAssignments> findByStatus(AssignmentStatus complited);
+    Page<TaskAssignments> findByAssignedBy_Id(Integer id, Pageable pageable);
 
-	Optional<List<TaskAssignments>> findByStatusAndAssignedTo_Empcode(AssignmentStatus pending, String empId);
+    List<TaskAssignments> findByStatus(AssignmentStatus complited);
 
-	List<TaskAssignments> findByAssignedTo_Departments_Dept(String dept);
+    Optional<List<TaskAssignments>> findByStatusAndAssignedTo_Empcode(AssignmentStatus pending, String empId);
 
-	long countByStatus(AssignmentStatus complited);
+    List<TaskAssignments> findByAssignedTo_Departments_Dept(String dept);
 
-	int countByStatusAndAssignedTo_Empcode(AssignmentStatus pending,
-			String employeesEmpCode);
+    long countByStatus(AssignmentStatus complited);
 
-	int countByAssignedTo_Departments_Dept(String dept);
-	
-//	
-//	@ManyToOne
-//	private Employees assignedTo;
-//	@ManyToOne
-//	private Employees assignedBy;
+    int countByStatusAndAssignedTo_Empcode(AssignmentStatus pending,
+            String employeesEmpCode);
 
- }
+    int countByAssignedTo_Departments_Dept(String dept);
+
+    @Query("""
+			select t.status , count(t)
+				from TaskAssignments t
+                where t.assignedBy.firstname = ?1
+				group by t.status
+			""")
+    Object[] countAllByStatus( String managerName);
+
+}

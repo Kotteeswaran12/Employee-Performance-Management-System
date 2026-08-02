@@ -43,7 +43,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authHeader.substring(7);
+        String jwt = authHeader.substring(7).trim();
 
         System.out.println("Header = [" + authHeader + "]");
 

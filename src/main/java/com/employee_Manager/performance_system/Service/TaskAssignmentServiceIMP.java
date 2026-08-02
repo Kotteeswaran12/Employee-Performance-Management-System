@@ -37,24 +37,24 @@ public class TaskAssignmentServiceIMP implements TaskAssignmentService {
     }
 
     @Override
-    public TaskAssignments assignTask(Integer taskid, LocalDate dueDate, Integer employeeId, Integer managerid) {
+    public TaskAssignments assignTask(Integer taskid, LocalDate dueDate, String employeeId, String managerName) {
         // TODO Auto-generated method stub
 
         Task existingTask = taskRepository.findById(taskid)
                 .orElseThrow(() -> new TaskException("Task Not Found For id :" + taskid));
 
-        Employees emp = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found for ID :" + employeeId));
+        Employees emp = employeeRepository.findByEmpcode(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found for Code :" + employeeId));
 
-        Employees manager = employeeRepository.findById(managerid)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found for ID :" + managerid));
+        Employees manager = employeeRepository.findByFirstname(managerName)
+                .orElseThrow(() -> new EmployeeNotFoundException("Manager Not Found for name :" + managerName));
 
         if (emp.getManager() == null) {
             throw new EmployeeManagerException("no manager is assigned to this Employee id :" + employeeId);
         }
 
         if (!emp.getManager().getId().equals(manager.getId())) {
-            throw new EmployeeManagerException("Manager can assign tasks only to subordinates");
+            throw new EmployeeManagerException("Manager can only assign tasks only to they Team Members");
         }
 
         if (dueDate.isBefore(LocalDate.now())) {
@@ -134,5 +134,11 @@ public class TaskAssignmentServiceIMP implements TaskAssignmentService {
         Pageable pageable = PageRequest.of(page, size);
 
 		return taskAssignmentRepository.findAll(pageable);
+    }
+
+    @Override
+    public Object[] CountAllByStatus(String managerName) {
+        // TODO Auto-generated method stub
+        return taskAssignmentRepository.countAllByStatus(managerName);
     }
 }

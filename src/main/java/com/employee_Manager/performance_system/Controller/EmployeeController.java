@@ -31,145 +31,131 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping("/api/")
 public class EmployeeController {
 
-	private final EmployeeService employeeService;
-	private final RequestDTOMapper requestDTOMapper;
+    private final EmployeeService employeeService;
+    private final RequestDTOMapper requestDTOMapper;
 
-	public EmployeeController(EmployeeService employeeService, RequestDTOMapper requestDTOMapper) {
-		super();
-		this.employeeService = employeeService;
-		this.requestDTOMapper = requestDTOMapper;
-	}
+    public EmployeeController(EmployeeService employeeService, RequestDTOMapper requestDTOMapper) {
+        super();
+        this.employeeService = employeeService;
+        this.requestDTOMapper = requestDTOMapper;
+    }
 
 //	Access by Manager
-	
-	@Tag(name = "Manager - ONLY Access")
-	@Operation(
-			summary = "Get All Employees - Manager",
-			description = "Get all the Employee by Manager Referance "
-			)
-	@PreAuthorize("hasRole('MANAGER')")
-	@GetMapping("employee")
-	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication ,@RequestParam(defaultValue = "0") int page ,@RequestParam(defaultValue = "10") int size) {
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(
+            summary = "Get All Employees - Manager",
+            description = "Get all the Employee by Manager Referance "
+    )
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("employee")
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		Page<Employees> employees = employeeService.getAllSubordinatesByManagerName(authentication.getName() , page , size);
+        Page<Employees> employees = employeeService.getAllSubordinatesByManagerName(authentication.getName(), page, size);
 
-		List<EmployeeResponseDTO> dtos = new ArrayList<>();
+        List<EmployeeResponseDTO> dtos = new ArrayList<>();
 
-		for (Employees e : employees) {
+        for (Employees e : employees) {
 
-			dtos.add(DTOMapper.toEmployeeDto(e));
+            dtos.add(DTOMapper.toEmployeeDto(e));
 
-		}
+        }
 
-		return new ResponseEntity<>(dtos, HttpStatus.OK);
-	}
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
 
-	
-	
-	
 //	Access only by ADMIN
-	@Tag(name = "ADMIN - ONLY Access")
-	@Operation(
-			summary = "Add Manager "
-			, description = "to a Department by using Department ID"
-			)
-	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping("employee/manager/{deptId}")
-	public ResponseEntity<EmployeeResponseDTO> addEmployees(@RequestBody EmployeeRequestDTO emp,
-			@PathVariable Integer deptId) {
+    @Tag(name = "ADMIN - ONLY Access")
+    @Operation(
+            summary = "Add Manager ",
+            description = "to a Department by using Department ID"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("employee/manager/{deptId}")
+    public ResponseEntity<EmployeeResponseDTO> addEmployees(@RequestBody EmployeeRequestDTO emp,
+            @PathVariable Integer deptId) {
 
 //		emp.setEmpcode("EMP);
+        Employees e = employeeService.addManagerToDepartment(requestDTOMapper.toEmployeeEntity(emp), deptId);
 
-		Employees e = employeeService.addManagerToDepartment(requestDTOMapper.toEmployeeEntity(emp), deptId);
+        return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
+    }
 
-		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
-	}
-
-	
-	
-	
 //	Access only by ADMIN
-	@Tag(name = "ADMIN - ONLY Access")
-	@Operation(
-			summary = "Delete any Employee "
-			, description = "By usind Employee ID"
-			)
-	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("employee/{id}")
-	public ResponseEntity<EmployeeResponseDTO> deleteEmployeeById(@PathVariable Integer id) {
+    @Tag(name = "ADMIN - ONLY Access")
+    @Operation(
+            summary = "Delete any Employee ",
+            description = "By usind Employee ID"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("employee/{id}")
+    public ResponseEntity<EmployeeResponseDTO> deleteEmployeeById(@PathVariable Integer id) {
 
-		Employees e = employeeService.deleteEmployeeById(id);
+        Employees e = employeeService.deleteEmployeeById(id);
 
-		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
-	}
-	
-	
-	
-	
-	@Tag(name = "ADMIN - ONLY Access")
-	@Operation(
-			summary = "Get all Employees"
-			)
-	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping("employees/getall")
-	public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(@RequestParam (defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.CREATED);
+    }
 
+    @Tag(name = "ADMIN - ONLY Access")
+    @Operation(
+            summary = "Get all Employees"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("employees/getall")
+    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		Page<Employees> employees = employeeService.getAllEmployees(page, size);
+        Page<Employees> employees = employeeService.getAllEmployees(page, size);
 
-		List<EmployeeResponseDTO> dtos = new ArrayList<>();
+        List<EmployeeResponseDTO> dtos = new ArrayList<>();
 
-		for (Employees e : employees) {
+        for (Employees e : employees) {
 
-			dtos.add(DTOMapper.toEmployeeDto(e));
+            dtos.add(DTOMapper.toEmployeeDto(e));
 
-		}
+        }
 
-		return new ResponseEntity<>(dtos , HttpStatus.OK);
-	}
-	
-	
-	
-	
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
 //	@Tag(name = "ADMIN - ONLY Access")
-	@Tag(name = "General APIs")
-	@Operation(
-			summary = "Get all Details of Employee "
-			, description = "By usind Employee Name Pass throught the JWT Token !!"
-			)
-	@GetMapping("/employee/by-UserName")
-	public ResponseEntity<EmployeeResponseDTO> getEmployeeById(Authentication authentication ) {
+    @Tag(name = "General APIs")
+    @Operation(
+            summary = "Get all Details of Employee ",
+            description = "By usind Employee Name Pass throught the JWT Token !!"
+    )
+    @GetMapping("/employee/by-UserName")
+    public ResponseEntity<EmployeeResponseDTO> getEmployeeById(Authentication authentication) {
 
-		Employees e = employeeService.getEmployeByFirstName(authentication.getName());
+        Employees e = employeeService.getEmployeByFirstName(authentication.getName());
 
-		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.OK);
-	}
+        return new ResponseEntity<>(DTOMapper.toEmployeeDto(e), HttpStatus.OK);
+    }
 
-	
-	
-	
-	
-	
-	
-	
 //	Access only by Manager
-	 
-	@Tag(name = "Manager - ONLY Access")
-	@Operation(
-			summary = "Add Employee to the Manager Department "
-			, description = "Pass the Employees Details in Body "
-			)
-	@PreAuthorize("hasRole('MANAGER')")
-	@PostMapping("employee")
-	public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody EmployeeRequestDTO emp,
-			Authentication authentication) {
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(
+            summary = "Add Employee to the Manager Department ",
+            description = "Pass the Employees Details in Body "
+    )
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("employee")
+    public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody EmployeeRequestDTO emp,
+            Authentication authentication) {
 
-		System.out.println("HI");
-		Employees e = employeeService.addEmployeeAndAssigntoManager(requestDTOMapper.toEmployeeEntity(emp), authentication.getName());
+        System.out.println("HI");
+        Employees e = employeeService.addEmployeeAndAssigntoManager(requestDTOMapper.toEmployeeEntity(emp), authentication.getName());
 
-		return new ResponseEntity<>(DTOMapper.toEmployeeDto(e),
+        return new ResponseEntity<>(DTOMapper.toEmployeeDto(e),
+                HttpStatus.CREATED);
+    }
 
-				HttpStatus.CREATED);
-	}
+    @Tag(name = "ADMIN - ONLY Access")
+    @Operation(
+            summary = "Get the Count By Departements "
+    )
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/CountEmployeeByDept")
+    public ResponseEntity<Object[]> CountEmployeeByDept() {
+        return new ResponseEntity<>(employeeService.countAllTheEmployeesByDept(), HttpStatus.OK);
+    }
 
 }

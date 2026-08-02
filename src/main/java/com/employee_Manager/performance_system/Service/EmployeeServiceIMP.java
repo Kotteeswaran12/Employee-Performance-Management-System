@@ -1,6 +1,7 @@
 package com.employee_Manager.performance_system.Service;
 
 import java.time.LocalDate;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -114,6 +115,12 @@ public class EmployeeServiceIMP implements EmployeeService {
 		// TODO Auto-generated method stub
 		Pageable pageable = PageRequest.of(page, size , Sort.by("firstname").ascending());
 		return empRepo.findAll(pageable);
+	}
+
+	@Override
+	public Object[] countAllTheEmployeesByDept() {
+		// TODO Auto-generated method stub
+		return empRepo.countAllByDepartments();
 	}
 	
 	

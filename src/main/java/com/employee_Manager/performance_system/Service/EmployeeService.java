@@ -1,9 +1,6 @@
 package com.employee_Manager.performance_system.Service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 
 import com.employee_Manager.performance_system.Entity.Employees;
 
@@ -22,5 +19,7 @@ public interface EmployeeService {
 	Employees getEmployeByFirstName(String name);
 	
 	Page<Employees> getAllEmployees(int page , int size);
+
+	Object[] countAllTheEmployeesByDept();
 
 }
