@@ -48,17 +48,11 @@ public class EmployeeController {
     )
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("employee")
-    public ResponseEntity<List<EmployeeResponseDTO>> getAllEmployees(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<EmployeeResponseDTO>> getAllEmployees(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
         Page<Employees> employees = employeeService.getAllSubordinatesByManagerName(authentication.getName(), page, size);
 
-        List<EmployeeResponseDTO> dtos = new ArrayList<>();
-
-        for (Employees e : employees) {
-
-            dtos.add(DTOMapper.toEmployeeDto(e));
-
-        }
+        Page<EmployeeResponseDTO> dtos =employees.map(DTOMapper::toEmployeeDto);
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }

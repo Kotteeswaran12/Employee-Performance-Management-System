@@ -19,7 +19,6 @@ public interface EmployeeRepository extends JpaRepository<Employees, Integer> {
 	Optional<Employees> findByEmpcode(String empcode);
 	
 	Optional<Employees> findByFirstname(String username);
-
 	long countByUser_Role(RoleTypes manager);
 
 	Page<Employees> findByManager(Employees empManager, Pageable pageable);

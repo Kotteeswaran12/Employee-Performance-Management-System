@@ -53,4 +53,18 @@ public class DepartmentService implements DepartmentServiceInterface {
 		
 	}
 
+	@Override
+	public Departments updateDepartment(String deptName , int id) {
+		// TODO Auto-generated method stub
+
+		Departments dept = DeptRepo.findById(id)
+		.orElseThrow(() -> new DepartmentNotFoundException("the department Not found for the Dept-id :" + id));
+
+		dept.setDept(deptName);
+
+		DeptRepo.save(dept);
+
+		return dept ;
+	}
+
 }
