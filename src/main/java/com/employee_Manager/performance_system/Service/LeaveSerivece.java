@@ -18,4 +18,5 @@ public interface LeaveSerivece {
 	ApplyLeave setLeaveStatus(Integer id , LeaveStatus leaveStatus , String managerName);
 
     Page<ApplyLeave> getAllEmployeeLeavesRequest(int page, int size);
+	Page<ApplyLeave> getAllSubordinateLeaves(String ManagerName , int page , int size);
 }

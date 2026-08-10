@@ -122,6 +122,9 @@ public class EmployeeServiceIMP implements EmployeeService {
 		// TODO Auto-generated method stub
 		return empRepo.countAllByDepartments();
 	}
+
+
+	
 	
 	
 

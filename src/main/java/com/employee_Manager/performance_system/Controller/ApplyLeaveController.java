@@ -52,13 +52,13 @@ public class ApplyLeaveController {
         return new ResponseEntity<>(dtoLeave, HttpStatus.OK);
     }
 
-	@Tag(name = "ADMIN - Only Access")
-	@Operation(summary= "Get all the Leave Request ")
-	@PreAuthorize("hasRole('ADMIN')")
+    @Tag(name = "ADMIN - Only Access")
+    @Operation(summary = "Get all the Leave Request ")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/leaves")
     public ResponseEntity<Page<ApplyLeaveDTO>> getalltheLeaveRequest(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-        Page<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesRequest( page, size);
+        Page<ApplyLeave> leaves = leaveSerivece.getAllEmployeeLeavesRequest(page, size);
 
         Page<ApplyLeaveDTO> dtoLeave = leaves.map(DTOMapper::toApplyLeaveDto);
 
@@ -109,6 +109,19 @@ public class ApplyLeaveController {
     @GetMapping("/leave/{id}")
     ResponseEntity<LeaveStatus> getLeaveStatusById(@PathVariable Integer id) {
         return new ResponseEntity<>(leaveSerivece.getLeaveStatusById(id), HttpStatus.OK);
+    }
+
+    
+    @Tag(name = "Manager - ONLY Access")
+    @Operation(summary = "Get all the Employees Leave ", description = "Manager can get all the Employees Leave Request")
+    @PreAuthorize("hasRole('MANAGER')")
+    @GetMapping("/getEmpLeaves")
+    public ResponseEntity<Page<ApplyLeaveDTO>> getAllSubordinateLeaves(Authentication authentication, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Page<ApplyLeave> leaves = leaveSerivece.getAllSubordinateLeaves(authentication.getName(), page, size);
+
+        Page<ApplyLeaveDTO> LeaveDto = leaves.map(DTOMapper::toApplyLeaveDto);
+        return new ResponseEntity<>(LeaveDto, HttpStatus.OK);
+
     }
 
 }
