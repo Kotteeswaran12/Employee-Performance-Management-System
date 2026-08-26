@@ -49,11 +49,11 @@ public class FeedbackServiceIMP implements FeedbackService {
 	}
 
 	@Override
-	public List<EMPFeedBack> getAllFeedbackByEmpId(String userName) {
-		Employees employees = employeeRepository.findByFirstname(userName)
-				.orElseThrow(() -> new EmployeeNotFoundException("Manager OR UserNot Found !!"));
+	public Page<EMPFeedBack> getAllFeedbackByEmpId(String userName , int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		
 
-		return employees.getFeedBacks();
+		return feedbackpository.findByemployees_firstname(userName , pageable);
 	}
 
 	@Override

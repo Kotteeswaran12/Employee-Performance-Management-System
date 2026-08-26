@@ -52,16 +52,14 @@ public class EMPFeedBackController {
 	@Tag(name = "General APIs")
 	@Operation(summary = "Can Get the all Feebacks ")
 	@GetMapping("feedback")
-	public ResponseEntity<List<EMPFeedBackDTO>> getAllFeedbackByEmpId(Authentication authentication) {
+	public ResponseEntity<Page<EMPFeedBackDTO>> getAllFeedbackByEmpId(Authentication authentication ,@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<EMPFeedBack> feedback = feedbackServiceIMP.getAllFeedbackByEmpId(authentication.getName());
+		Page<EMPFeedBack> feedback = feedbackServiceIMP.getAllFeedbackByEmpId(authentication.getName() , page , size);
 
-		List<EMPFeedBackDTO> dto = new ArrayList<>();
+		Page<EMPFeedBackDTO> dto = feedback.map(DTOMapper :: toFeedBackDto);
 
-		for (EMPFeedBack f : feedback) {
-
-			dto.add(DTOMapper.toFeedBackDto(f));
-		}
+		
 
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}

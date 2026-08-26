@@ -15,138 +15,143 @@ import com.employee_Manager.performance_system.Entity.Employees;
 import com.employee_Manager.performance_system.Entity.PerformanceReview;
 import com.employee_Manager.performance_system.Entity.TaskAssignments;
 import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundException;
+import com.employee_Manager.performance_system.Exceptions.GlobalExceptionHandeler;
 import com.employee_Manager.performance_system.Repository.EmployeeRepository;
 import com.employee_Manager.performance_system.Repository.PerformanceReviewRepository;
 
 @Service
 public class PerformanceReviewServiceIMP implements PerformanceReviewService {
 
-	private final PerformanceReviewRepository performanceReviewRepository;
+    private final PerformanceReviewRepository performanceReviewRepository;
 
-	private final EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-	public PerformanceReviewServiceIMP(PerformanceReviewRepository performanceReviewRepository,
-			EmployeeRepository employeeRepository) {
-		super();
-		this.performanceReviewRepository = performanceReviewRepository;
-		this.employeeRepository = employeeRepository;
-	}
+    public PerformanceReviewServiceIMP(PerformanceReviewRepository performanceReviewRepository,
+            EmployeeRepository employeeRepository) {
+        super();
+        this.performanceReviewRepository = performanceReviewRepository;
+        this.employeeRepository = employeeRepository;
+    }
 
-	@Override
-	public PerformanceReview createReview(Integer empId, Integer managerId, Integer qualityScore, String remarks) {
+    @Override
+    public PerformanceReview createReview(Integer empId, String ManagerName, Integer qualityScore, String remarks) {
 
-		PerformanceReview performanceReview = new PerformanceReview();
+        PerformanceReview performanceReview = new PerformanceReview();
 
-		Employees emp = employeeRepository.findById(empId)
-				.orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found !!"));
+        Employees emp = employeeRepository.findById(empId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found !!"));
 
-		Employees manager = employeeRepository.findById(managerId)
-				.orElseThrow(() -> new EmployeeNotFoundException("Manager Not Found !!"));
+        Employees manager = employeeRepository.findByFirstname(ManagerName)
+                .orElseThrow(() -> new EmployeeNotFoundException("Manager Not Found !!"));
 
-		performanceReview.setQualityScore(qualityScore);
-		performanceReview.setAttendanceScore(calculateAttendanceScore(emp));
-		performanceReview.setTaskScore(calculateTaskScore(emp));
-		performanceReview.setFeedbackScore(calculateFeedbackScore(emp));
-		performanceReview.setOverallScore(calculateOverallScoreScore(emp , qualityScore));
-		performanceReview.setReviewBy(manager);
-		performanceReview.setReviewDate(LocalDate.now());
-		performanceReview.setEmployees(emp);
-		performanceReview.setRemarks(remarks);
+        performanceReview.setQualityScore(qualityScore);
+        performanceReview.setAttendanceScore(calculateAttendanceScore(emp));
+        performanceReview.setTaskScore(calculateTaskScore(emp));
+        performanceReview.setFeedbackScore(calculateFeedbackScore(emp));
+        performanceReview.setOverallScore(calculateOverallScoreScore(emp, qualityScore));
+        performanceReview.setReviewBy(manager);
+        performanceReview.setReviewDate(LocalDate.now());
+        performanceReview.setEmployees(emp);
+        performanceReview.setRemarks(remarks);
 
-		return performanceReviewRepository.save(performanceReview);
-	}
+        return performanceReviewRepository.save(performanceReview);
+    }
 
-	@Override
-	public Integer calculateAttendanceScore(Employees emp) {
-		List<Attendance> attendances = emp.getAttendances();
+    @Override
+    public Integer calculateAttendanceScore(Employees emp) {
+        List<Attendance> attendances = emp.getAttendances();
 
-		if (attendances.size() == 0) {
-			return 0;
-		}
+        if (attendances.size() == 0) {
+            return 0;
+        }
 
-		int overall = attendances.size();
-		long res = attendances.stream().filter(a -> a.getWorkingHours() >= 9.0).count();
+        int overall = attendances.size();
+        long res = attendances.stream().filter(a -> a.getWorkingHours() >= 9.0).count();
 
-		return (int) (res * 100) / overall;
-	}
+        return (int) (res * 100) / overall;
+    }
 
-	@Override
-	public Integer calculateTaskScore(Employees emp) {
-		List<TaskAssignments> taskAss = emp.getAssignedTask();
+    @Override
+    public Integer calculateTaskScore(Employees emp) {
+        List<TaskAssignments> taskAss = emp.getAssignedTask();
 
-		if (taskAss.size() == 0) {
-			return 0;
-		}
+        if (taskAss.size() == 0) {
+            return 0;
+        }
 
-		int totalScore = 0;
+        int totalScore = 0;
 
-		for (TaskAssignments a : taskAss) {
+        for (TaskAssignments a : taskAss) {
 
-			if (a.getCompletedDate() == null) {
-				continue;
-			}
+            if (a.getCompletedDate() == null) {
+                continue;
+            }
 
-			long res = ChronoUnit.DAYS.between(a.getDueDate(), a.getCompletedDate());
+            long res = ChronoUnit.DAYS.between(a.getDueDate(), a.getCompletedDate());
 
-			if (res < 0) {
-				totalScore += 100;
-			} else if (res == 0) {
-				totalScore += 90;
-			} else if (res <= 2) {
-				totalScore += 70;
+            if (res < 0) {
+                totalScore += 100;
+            } else if (res == 0) {
+                totalScore += 90;
+            } else if (res <= 2) {
+                totalScore += 70;
 
-			} else {
-				totalScore += 50;
-			}
+            } else {
+                totalScore += 50;
+            }
 
-		}
+        }
 
-		return (totalScore / taskAss.size());
-	}
+        return (totalScore / taskAss.size());
+    }
 
-	public Double calculateOverallScoreScore(Employees empId , Integer qualityScore) {
-		
-		int attendace = calculateAttendanceScore(empId);
-		int task = calculateTaskScore(empId);
-		int feedback = calculateFeedbackScore(empId);
-		
-		
+    public Double calculateOverallScoreScore(Employees empId, Integer qualityScore) {
 
-		 return (attendace * 0.25)
-		         + (task * 0.35)
-		         + (feedback * 0.20)
-		         + (qualityScore * 0.20);
-	}
+        int attendace = calculateAttendanceScore(empId);
+        int task = calculateTaskScore(empId);
+        int feedback = calculateFeedbackScore(empId);
 
-	@Override
-	public Integer calculateFeedbackScore(Employees emp) {
+        return (attendace * 0.25)
+                + (task * 0.35)
+                + (feedback * 0.20)
+                + (qualityScore * 0.20);
+    }
 
-		List<EMPFeedBack> feedBacks = emp.getFeedBacks();
+    @Override
+    public Integer calculateFeedbackScore(Employees emp) {
 
-		if (feedBacks.size() == 0) {
-			return 0;
-		}
+        List<EMPFeedBack> feedBacks = emp.getFeedBacks();
 
-		int total = 0;
+        if (feedBacks.size() == 0) {
+            return 0;
+        }
 
-		for (EMPFeedBack f : feedBacks) {
-			int res = f.getCommunicationScore() + f.getHelpfullnessScore() + f.getKnowledgeSharingScore()
-					+ f.getTeamworkScore();
+        int total = 0;
 
-			double percentage  = (res / 400.00 )* 100;
-			
-			total += (int) percentage;
-		}
+        for (EMPFeedBack f : feedBacks) {
+            int res = f.getCommunicationScore() + f.getHelpfullnessScore() + f.getKnowledgeSharingScore()
+                    + f.getTeamworkScore();
 
-		return total / feedBacks.size();
-	}
+            double percentage = (res / 400.00) * 100;
 
-	@Override
-	public Page<PerformanceReview> getAllPerformanceReviewById(String username , int page , int size) {
-		// TODO Auto-generated method stub
-		
-		Pageable pageable = PageRequest.of(page, size);
-		return performanceReviewRepository.findByEmployees_firstname(username , pageable);
-	}
+            total += (int) percentage;
+        }
+
+        return total / feedBacks.size();
+    }
+
+    @Override
+    public Page<PerformanceReview> getAllPerformanceReviewById(String username, int page, int size) {
+        // TODO Auto-generated method stub
+
+        Pageable pageable = PageRequest.of(page, size);
+        return performanceReviewRepository.findByEmployees_firstname(username, pageable);
+    }
+
+    @Override
+    public List<PerformanceReview> getReviewById(int id) {
+
+        return performanceReviewRepository.findByEmployees_id(id);
+    }
 
 }

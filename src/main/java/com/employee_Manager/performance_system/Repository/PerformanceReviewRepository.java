@@ -16,4 +16,6 @@ public interface PerformanceReviewRepository extends JpaRepository<PerformanceRe
 	Page<PerformanceReview> findByEmployees_firstname(String firstname , Pageable pageable);
 
 	Optional<List<PerformanceReview>> findByEmployees_Empcode(String empcode); 
+
+	List<PerformanceReview> findByEmployees_id(int id);
 }

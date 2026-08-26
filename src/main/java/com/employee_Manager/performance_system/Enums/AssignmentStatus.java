@@ -4,6 +4,5 @@ public enum AssignmentStatus {
 
 	PENDING,
 	PROCESSING,
-	COMPLITED
-	
+	COMPLITED	
 }
