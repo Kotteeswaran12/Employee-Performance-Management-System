@@ -107,7 +107,7 @@ public class UserInfoController {
 	
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("user/getall")
+	@GetMapping("user/getall")
 	public ResponseEntity<Page<UserInfoDTO>> getAllUser(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10")int size) {
 
 		Page<UserInfo> userinfo = userInfoServiceIMP.getAllUsers(page , size) ;

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password4j.BcryptPassword4jPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.employee_Manager.performance_system.Entity.Employees;
@@ -16,7 +15,6 @@ import com.employee_Manager.performance_system.Exceptions.EmployeeNotFoundExcept
 import com.employee_Manager.performance_system.Exceptions.UserNotFoundException;
 import com.employee_Manager.performance_system.Repository.EmployeeRepository;
 import com.employee_Manager.performance_system.Repository.UserInfoRepository;
-import com.employee_Manager.performance_system.RequestDTO.UserInfoRequestDTO;
 
 @Service
 public class UserInfoServiceIMP implements UserInfoService {
@@ -38,7 +36,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 
 		emp.setUser(user);
 		
-		if(empID.startsWith("EMP")) {
+		if(empID.startsWith("Emp")) {
 			user.setRole(RoleTypes.EMPLOYEE);
 		}else {
 			user.setRole(RoleTypes.MANAGER);

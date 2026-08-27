@@ -135,7 +135,7 @@ public class EmployeeController {
     public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody EmployeeRequestDTO emp,
             Authentication authentication) {
 
-        System.out.println("HI");
+        
         Employees e = employeeService.addEmployeeAndAssigntoManager(requestDTOMapper.toEmployeeEntity(emp), authentication.getName());
 
         return new ResponseEntity<>(DTOMapper.toEmployeeDto(e),

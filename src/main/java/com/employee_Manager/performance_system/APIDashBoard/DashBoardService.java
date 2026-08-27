@@ -73,6 +73,7 @@ public class DashBoardService {
 	}
 
 	public EmployeeDashBoard getAllEmployeeDashBoardDetails(String empname) {
+		
 
 		EmployeeDashBoard employeeDashBoard = new EmployeeDashBoard();
 

@@ -27,6 +27,11 @@ public class RequestDTOMapper {
 		emp.setEmpcode(e.getEmpcode());
 		emp.setFirstname(e.getFirstname());
 		emp.setLastname(e.getLastname());
+		emp.setAddress(e.getAddress());
+		emp.setSalary(e.getSal());
+		emp.setPhone(e.getPhone());
+		emp.setDob(e.getDob());
+		emp.setGender(e.getGender());
 		return emp;
 
 	}
