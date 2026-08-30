@@ -17,89 +17,103 @@ import jakarta.validation.constraints.Email;
 @Entity
 public class UserInfo {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@Column(unique = true)
-	private String username;
-	@Email
-	@Column(unique = true, nullable = false)
-	private String email;
-	private String password;
-	private LocalDate createdate;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	@Enumerated(EnumType.STRING)
-	private RoleTypes role;
+    @Column(unique = true)
+    private String username;
+    @Email
+    @Column(unique = true, nullable = false)
+    private String email;
+    private String password;
+    private LocalDate createdate;
+    private Long phone;
 
-	@OneToOne(mappedBy = "user")
-	private Employees employees;
+    @Enumerated(EnumType.STRING)
+    private RoleTypes role;
 
-	public UserInfo() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    @OneToOne(mappedBy = "user")
+    private Employees employees;
 
-	public RoleTypes getRole() {
-		return role;
-	}
+    public UserInfo() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	public void setRole(RoleTypes role) {
-		this.role = role;
-	}
+    public RoleTypes getRole() {
+        return role;
+    }
 
-	public Employees getEmployees() {
-		return employees;
-	}
+    public void setRole(RoleTypes role) {
+        this.role = role;
+    }
 
-	public void setEmployees(Employees employees) {
-		this.employees = employees;
-	}
+    public Employees getEmployees() {
+        return employees;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setEmployees(Employees employees) {
+        this.employees = employees;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public LocalDate getCreatedate() {
-		return createdate;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setCreatedate(LocalDate createdate) {
-		this.createdate = createdate;
-	}
+    public LocalDate getCreatedate() {
+        return createdate;
+    }
 
-	@Override
-	public String toString() {
-		return "UserInfo [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-				+ ", createdate=" + createdate + ", role=" + role + "]";
-	}
+    public void setCreatedate(LocalDate createdate) {
+        this.createdate = createdate;
+    }
 
+    /**
+     * @return Long return the phone
+     */
+    public Long getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone the phone to set
+     */
+    public void setPhone(Long phone) {
+        this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+                + ", createdate=" + createdate + ", role=" + role + "Phone =" + phone + "]";
+    }
 }

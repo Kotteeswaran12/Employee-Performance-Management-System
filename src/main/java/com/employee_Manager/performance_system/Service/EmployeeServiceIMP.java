@@ -123,6 +123,11 @@ public class EmployeeServiceIMP implements EmployeeService {
 		return empRepo.countAllByDepartments();
 	}
 
+	@Override
+	public Employees getEmployeeByEmpCode(String empCode) {
+		return empRepo.findByEmpcode(empCode).orElseThrow(()-> new EmployeeNotFoundException("No Employee Found for Emp-Cpde :" + empCode));
+	}
+
 
 	
 	

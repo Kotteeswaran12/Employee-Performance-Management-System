@@ -52,7 +52,7 @@ public class EmployeeController {
 
         Page<Employees> employees = employeeService.getAllSubordinatesByManagerName(authentication.getName(), page, size);
 
-        Page<EmployeeResponseDTO> dtos =employees.map(DTOMapper::toEmployeeDto);
+        Page<EmployeeResponseDTO> dtos = employees.map(DTOMapper::toEmployeeDto);
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
@@ -111,7 +111,7 @@ public class EmployeeController {
     }
 
 //	@Tag(name = "ADMIN - ONLY Access")
-    @Tag(name = "General APIs")
+    @Tag(name = "Employee - ONLY Access")
     @Operation(
             summary = "Get all Details of Employee ",
             description = "By usind Employee Name Pass throught the JWT Token !!"
@@ -135,11 +135,20 @@ public class EmployeeController {
     public ResponseEntity<EmployeeResponseDTO> addEmployeeAndAssigntoManager(@RequestBody EmployeeRequestDTO emp,
             Authentication authentication) {
 
-        
         Employees e = employeeService.addEmployeeAndAssigntoManager(requestDTOMapper.toEmployeeEntity(emp), authentication.getName());
 
         return new ResponseEntity<>(DTOMapper.toEmployeeDto(e),
                 HttpStatus.CREATED);
+    }
+
+    @Tag(name = "General APIs")
+    @Operation(
+            summary = "Get all Details of Employee-Code ",
+            description = "By usind Employee Code   !!"
+    )
+    @GetMapping("/getByEmpCode/{EmpCode}")
+    public ResponseEntity<EmployeeResponseDTO> getEmployeeByEmpCode(@PathVariable String EmpCode) {
+        return new ResponseEntity<>(DTOMapper.toEmployeeDto(employeeService.getEmployeeByEmpCode(EmpCode)), HttpStatus.OK);
     }
 
     @Tag(name = "ADMIN - ONLY Access")

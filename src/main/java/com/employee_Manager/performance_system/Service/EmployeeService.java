@@ -22,6 +22,8 @@ public interface EmployeeService {
 
 	Object[] countAllTheEmployeesByDept();
 
+    Employees getEmployeeByEmpCode(String empCode);
+
 	
 
 }
