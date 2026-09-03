@@ -91,7 +91,7 @@ public class UserInfoServiceIMP implements UserInfoService {
         user.setEmail(userInfo.getEmail());
         user.setPhone(userInfo.getPhone());
 
-        user.setPassword(bCryptPasswordEncoder.encode(userInfo.getPassword()));
+        
 
         return userInfoRepository.save(user);
     }

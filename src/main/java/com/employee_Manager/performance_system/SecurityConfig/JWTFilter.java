@@ -61,7 +61,10 @@ public class JWTFilter extends OncePerRequestFilter {
                 UserDetails user = serviceIMP.loadUserByUsername(username);
                 System.out.println("User load : " + user);
 
-                if (jwtService.isTokenValid(jwt, user)) {
+                boolean isValidToken = jwtService.isTokenValid(jwt, user);
+                System.out.println("isTokenvalis :" + isValidToken);
+
+                if (isValidToken) {
 
                     System.out.println("Token Valid");
 

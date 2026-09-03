@@ -91,7 +91,7 @@ public class UserInfoController {
     }
 
     @PostMapping("user/UpdateProfile")
-    public ResponseEntity<UserInfoDTO> UpdateUserInfo(@RequestParam UserInfoDTO userInfo, Authentication authentication) {
+    public ResponseEntity<UserInfoDTO> UpdateUserInfo(@RequestBody UserInfoDTO userInfo, Authentication authentication) {
         return new ResponseEntity<>(DTOMapper.toUserInfoDTO(userInfoServiceIMP.UpdateUserInfo(userInfo, authentication.getName())),
                 HttpStatus.OK);
     }

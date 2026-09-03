@@ -154,7 +154,7 @@ public class DTOMapper {
         dto.setPassword(user.getPassword());
         dto.setRole(user.getRole());
         dto.setUsername(user.getUsername());
-        dto.setPhone(1323654789);
+        dto.setPhone(user.getPhone() != null ? user.getPhone() : 1323654789);
         return dto;
     }
 
