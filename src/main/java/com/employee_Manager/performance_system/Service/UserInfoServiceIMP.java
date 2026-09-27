@@ -36,7 +36,7 @@ public class UserInfoServiceIMP implements UserInfoService {
 
         emp.setUser(user);
 
-        if (empID.startsWith("Emp")) {
+        if (empID.toLowerCase().startsWith("emp")) {
             user.setRole(RoleTypes.EMPLOYEE);
         } else {
             user.setRole(RoleTypes.MANAGER);
