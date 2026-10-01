@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,48 +24,80 @@ public class SecurityConfiguration {
     private final JWTFilter jwtFilter;
 
     public SecurityConfiguration(JWTFilter jwtFilter) {
-        super();
         this.jwtFilter = jwtFilter;
     }
 
     @Bean
     public SecurityFilterChain chain(HttpSecurity http) throws Exception {
-        return http.csrf(c -> c.disable())
+
+        return http
+                .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(a
-                        -> a.
-                        requestMatchers("/swagger-ui/**",
-                                "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/admin/user/add-admin",
-                                "/api/user/signUp/{empId}", "/api/user/log-in").permitAll()
-                        // .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
-                        // .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                        // .requestMatchers("/api/employee/**").hasAnyRole("MANAGER", "ADMIN", "EMPLOYEE")
-                        // .requestMatchers("/api/attendance/**").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                        .anyRequest()
-                        .authenticated()
-                ).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                //				.httpBasic(Customizer.withDefaults())
-
+                .authorizeHttpRequests(a -> a
+                // Allow CORS preflight requests
+                .requestMatchers(
+                        HttpMethod.OPTIONS,
+                        "/**"
+                ).permitAll()
+                // Swagger
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**"
+                ).permitAll()
+                // Authentication
+                .requestMatchers(
+                        "/api/admin/user/add-admin",
+                        "/api/user/signUp/{empId}",
+                        "/api/user/log-in"
+                ).permitAll()
+                // Everything else requires authentication
+                .anyRequest().authenticated()
+                )
+                .sessionManagement(s
+                        -> s.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS
+                )
+                )
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .build();
-
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        CorsConfiguration configuration
+                = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://employee-performance-management-ui-x1.vercel.app"
+        ));
+
+        configuration.setAllowedMethods(List.of(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
+        ));
+
         configuration.setAllowedHeaders(List.of("*"));
+
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source
+                = new UrlBasedCorsConfigurationSource();
 
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
 
-        return urlBasedCorsConfigurationSource;
+        return source;
     }
-
 }
