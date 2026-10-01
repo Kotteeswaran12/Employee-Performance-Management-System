@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SpringBootApplication
 
-@CrossOrigin (origins = "https://employee-performance-management-ui-xi.vercel.app/")
+@CrossOrigin (origins = "https://employee-performance-management-ui-xi.vercel.app")
 public class PerformanceSystemApplication {
 
 	public static void main(String[] args) {
