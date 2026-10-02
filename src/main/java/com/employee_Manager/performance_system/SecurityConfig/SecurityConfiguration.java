@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,72 +29,91 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain chain(HttpSecurity http) throws Exception {
 
-        return http
-                .csrf(c -> c.disable())
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(a -> a
-                // Allow CORS preflight requests
+        http
+            .csrf(csrf -> csrf.disable())
+
+            // Explicitly use our CORS configuration
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+            .authorizeHttpRequests(auth -> auth
+
+                // CORS preflight
                 .requestMatchers(
-                        HttpMethod.OPTIONS,
-                        "/**"
+                    HttpMethod.OPTIONS,
+                    "/**"
                 ).permitAll()
+
                 // Swagger
                 .requestMatchers(
-                        "/swagger-ui/**",
-                        "/swagger-ui.html",
-                        "/v3/api-docs/**"
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
                 ).permitAll()
-                // Authentication
+
+                // Authentication endpoints
                 .requestMatchers(
-                        "/api/admin/user/add-admin",
-                        "/api/user/signUp/{empId}",
-                        "/api/user/log-in"
+                    "/api/admin/user/add-admin",
+                    "/api/user/signUp/**",
+                    "/api/user/log-in"
                 ).permitAll()
-                // Everything else requires authentication
+
+                // Everything else
                 .anyRequest().authenticated()
+            )
+
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
                 )
-                .sessionManagement(s
-                        -> s.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS
-                )
-                )
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
-                .build();
+            )
+
+            .addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+            );
+
+        return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration
-                = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://employee-performance-management-ui-x1.vercel.app"
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "https://employee-performance-management-ui-x1.vercel.app",
+            "https://employee-performance-management-ui.kotteeswaran2005.workers.dev"
         ));
 
         configuration.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "PATCH",
-                "OPTIONS"
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "PATCH",
+            "OPTIONS"
         ));
 
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of(
+            "Authorization",
+            "Content-Type",
+            "Accept",
+            "Origin",
+            "X-Requested-With"
+        ));
 
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source
-                = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration(
-                "/**",
-                configuration
+            "/**",
+            configuration
         );
 
         return source;
